@@ -20,6 +20,7 @@ import {AddressUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/Addr
 
 import {SharedNFTLogic} from "./SharedNFTLogic.sol";
 import {IEditionSingleMintable} from "./IEditionSingleMintable.sol";
+import {Media} from "../contracts/Media.sol";
 
 /**
     This is a smart contract for handling dynamic contract minting.
@@ -180,6 +181,15 @@ contract SingleEditionMintable is
         toMint[0] = to;
         return _mintEditions(toMint);
     }
+    
+     function mintEditionMarket(address creator, IMarket.BidShares memory bidShares) public{
+        //require(_isAllowedToMint(), "Needs to be an allowed minter");
+        
+        data = getMediaData();
+       
+       _mintToMarket(creator,data,bidShares);
+
+    }
 
     /**
       @param recipients list of addresses to send the newly minted editions to
@@ -270,6 +280,38 @@ contract SingleEditionMintable is
         }
         return atEditionId.current();
     }
+    
+    function _mintToMarket(
+        address creator,
+        MediaData memory data,
+        IMarket.BidShares memory bidShares
+    ) internal onlyValidURI(data.tokenURI) onlyValidURI(data.metadataURI) {
+        require(data.contentHash != 0, "Media: content hash must be non-zero");
+     /**   require(
+            _contentHashes[data.contentHash] == false,
+            "Media: a token has already been created with this content hash"
+        );*/
+        require(
+            data.metadataHash != 0,
+            "Media: metadata hash must be non-zero"
+        );
+
+        uint256 tokenId = atEditionId.current();
+
+        _safeMint(creator, tokenId);
+       // _tokenIdTracker.increment();
+        _setTokenContentHash(tokenId, data.contentHash);
+        _setTokenMetadataHash(tokenId, data.metadataHash);
+        _setTokenMetadataURI(tokenId, data.metadataURI);
+        _setTokenURI(tokenId, data.tokenURI);
+        _creatorTokens[creator].add(tokenId);
+        _contentHashes[data.contentHash] = true;
+
+        tokenCreators[tokenId] = creator;
+        previousTokenOwners[tokenId] = creator;
+        IMarket(marketContract).setBidShares(tokenId, bidShares);
+    }
+
 
     /**
       @dev Get URIs for edition NFT
@@ -286,6 +328,23 @@ contract SingleEditionMintable is
         )
     {
         return (imageUrl, imageHash, animationUrl, animationHash);
+    }
+    
+    function getMediaData()
+    public
+    view
+    return (MediaData memory mediaData)
+    {
+        
+        bytes memory metadataJSON = sharedNFTLogic.createMetadataMedia;
+       const contentHash = sha256FromBuffer(imageUrl);
+       const metadataHash = sha256FromBuffer(Buffer.from(metadataJSON));
+       const mediaData = constructMediaData(
+    imageUrl,
+    metadataURI, //??
+    contentHash,
+    metadataHash
+  );
     }
 
     /**
@@ -339,3 +398,4 @@ contract SingleEditionMintable is
             ERC721Upgradeable.supportsInterface(interfaceId);
     }
 }
+

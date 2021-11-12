@@ -60,6 +60,29 @@ contract SharedNFTLogic is IPublicSharedMetadata {
         );
         return encodeMetadataJSON(json);
     }
+    
+    function createMetadataMedia(
+        string memory name,
+        string memory description,
+        string memory imageUrl,
+        string memory animationUrl,
+        uint256 tokenOfEdition,
+        uint256 editionSize
+    ) external pure returns (bytes memory) {
+        string memory _tokenMediaData = tokenMediaData(
+            imageUrl,
+            animationUrl,
+            tokenOfEdition
+        );
+        bytes memory json = createMetadataJSON(
+            name,
+            description,
+            _tokenMediaData,
+            tokenOfEdition,
+            editionSize
+        );
+        return json;
+    }
 
     /// Function to create the metadata json string for the nft edition
     /// @param name Name of NFT in metadata
@@ -173,3 +196,4 @@ contract SharedNFTLogic is IPublicSharedMetadata {
         return "";
     }
 }
+
