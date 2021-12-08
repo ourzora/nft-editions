@@ -7569,10 +7569,10 @@ typechain@^3.0.0:
     ts-essentials "^6.0.3"
     ts-generator "^0.1.1"
 
-typechain@^5.1.2:
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/typechain/-/typechain-5.1.2.tgz#c8784d6155a8e69397ca47f438a3b4fb2aa939da"
-  integrity sha512-FuaCxJd7BD3ZAjVJoO+D6TnqKey3pQdsqOBsC83RKYWKli5BDhdf0TPkwfyjt20TUlZvOzJifz+lDwXsRkiSKA==
+typechain@^6.0.5:
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/typechain/-/typechain-6.0.5.tgz#b0c4980b3c2e14c0474d54472fe358a7718ca685"
+  integrity sha512-Kr2rATu2Y7Y0wOC/I0zKuyLU8EEUpnuPGkiloZ65ACm4sSLFVF8Tnxn8LEUJSN93dX3RMu2DLF5fwRBOjNB+Gw==
   dependencies:
     "@types/prettier" "^2.1.1"
     command-line-args "^4.0.7"

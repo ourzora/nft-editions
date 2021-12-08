@@ -272,6 +272,20 @@ contract SingleEditionMintable is
     }
 
     /**
+      @dev Get description for edition NFT
+      @return description
+     */
+    function getDescription()
+        public
+        view
+        returns (
+            string memory
+        )
+    {
+        return description;
+    }
+
+    /**
       @dev Get URIs for edition NFT
       @return imageUrl, imageHash, animationUrl, animationHash
      */

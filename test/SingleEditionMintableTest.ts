@@ -52,6 +52,7 @@ describe("SingleEditionMintable", () => {
     )) as SingleEditionMintable;
     expect(await minterContract.name()).to.be.equal("Testing Token");
     expect(await minterContract.symbol()).to.be.equal("TEST");
+    expect(await minterContract.getDescription()).to.be.equal("This is a testing token for all");
     const editionUris = await minterContract.getURIs();
     expect(editionUris[0]).to.be.equal("");
     expect(editionUris[1]).to.be.equal(
