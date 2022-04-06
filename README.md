@@ -1,4 +1,4 @@
-# Zora NFT Editions
+# Zien extended Zora NFT Editions
 
 ### What are these contracts?
 1. `SingleEditionMintable`
@@ -38,16 +38,6 @@ note: ~ Deployed with 1.0.1 version of code. Missing public getter for descripti
 **Rinkeby**: [0x85FaDB8Debc0CED38d0647329fC09143d01Af660](https://rinkeby.etherscan.io/address/0x85FaDB8Debc0CED38d0647329fC09143d01Af660)
 
 note: ~ Deployed with 1.0.1 version of code. Missing public getter for description.
-
-
-**Polygon**: [0x4500590AfC7f12575d613457aF01F06b1eEE57a3](https://polygonscan.com/address/0x4500590AfC7f12575d613457aF01F06b1eEE57a3)
-
-note: Deployed with 1.0.2 version of code with public getter for description.
-
-
-**Mumbai**: [0x773E5B82179E6CE1CdF8c5C0d736e797b3ceDDDC](https://mumbai.polygonscan.com/address/0x773E5B82179E6CE1CdF8c5C0d736e797b3ceDDDC)
-
-note: Deployed with 1.0.2 version of code with public getter for description.
 
 
 ### How do I create a new edition?
@@ -101,7 +91,3 @@ Now that you have a edition, there are multiple options for lazy-minting and sal
 ### Verifying:
 
 `hardhat sourcify --network rinkeby && hardhat etherscan-verify --network rinkeby`
-
-### Bug Bounty
-5 ETH for any critical bugs that could result in loss of funds.
-Rewards will be given for smaller bugs or ideas.
