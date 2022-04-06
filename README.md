@@ -83,6 +83,14 @@ Now that you have a edition, there are multiple options for lazy-minting and sal
 * Can be used to issue tokens in response for contributing to a fundraiser
 * Tickets/access tokens allowing holders to access a discord or mint
 
+### Install
+
+`yarn install`
+
+### Test
+
+`yarn test`
+
 ### Deploying:
 (Replace network with desired network)
 
