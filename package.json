@@ -52,6 +52,6 @@
   "dependencies": {
     "ethers": "^5.4.1",
     "@openzeppelin/contracts-upgradeable": "^4.5.0",
-    "base64-sol": "^1.0.1"
+    "base64-sol": "^1.1.0"
   }
 }
