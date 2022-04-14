@@ -1,9 +1,9 @@
 {
-  "name": "@zoralabs/nft-editions-contracts",
+  "name": "@zien/zien-contracts",
   "version": "1.0.1",
   "description": "NFT Factory Contracts",
   "main": "index.js",
-  "author": "ZORA",
+  "author": "Zien",
   "license": "GPL-3.0",
   "private": false,
   "files": [
