@@ -56,9 +56,9 @@ contract SingleEditionMintable is
     // Current token id minted
     CountersUpgradeable.Counter private atEditionId;
     // Royalty amount in bps
-    uint256 royaltyBPS;
+    uint256 private royaltyBPS;
     // Addresses allowed to mint edition
-    mapping(address => bool) allowedMinters;
+    mapping(address => bool) private allowedMinters;
 
     // Price for sale
     uint256 public salePrice;
