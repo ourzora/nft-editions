@@ -4,8 +4,8 @@ import "hardhat-gas-reporter";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-etherscan";
 import { HardhatUserConfig } from "hardhat/config";
-import networks from './networks';
-import dotenv from 'dotenv';
+import networks from "./networks";
+import dotenv from "dotenv";
 dotenv.config();
 
 /**
@@ -13,13 +13,13 @@ dotenv.config();
  * @type import('hardhat/config').HardhatUserConfig
  */
 const config: HardhatUserConfig = {
-  defaultNetwork: 'hardhat',
+  defaultNetwork: "hardhat",
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
   },
   gasReporter: {
-    currency: 'USD',
-    gasPrice: 60, 
+    currency: "USD",
+    gasPrice: 60,
   },
   networks,
   namedAccounts: {
@@ -38,4 +38,3 @@ const config: HardhatUserConfig = {
 };
 
 export default config;
-
