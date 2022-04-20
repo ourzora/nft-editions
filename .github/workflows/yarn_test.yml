@@ -1,4 +1,4 @@
-name: npm test
+name: yarn test
 on: push
 jobs:
   run-test:
