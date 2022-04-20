@@ -43,32 +43,32 @@ contract SingleEditionMintable is
 
     // Media Urls
     // animation_url field in the metadata
-    string private animationUrl;
+    string private _animationUrl;
     // Hash for the associated animation
-    bytes32 private animationHash;
+    bytes32 private _animationHash;
     // Image in the metadata
-    string private imageUrl;
+    string private _imageUrl;
     // Hash for the associated image
-    bytes32 private imageHash;
+    bytes32 private _imageHash;
 
     // Total size of edition that can be minted
     uint256 public editionSize;
     // Current token id minted
-    CountersUpgradeable.Counter private atEditionId;
+    CountersUpgradeable.Counter private _atEditionId;
     // Royalty amount in bps
-    uint256 royaltyBPS;
+    uint256 private _royaltyBPS;
     // Addresses allowed to mint edition
-    mapping(address => bool) allowedMinters;
+    mapping(address => bool) private _allowedMinters;
 
     // Price for sale
     uint256 public salePrice;
 
     // NFT rendering logic contract
-    SharedNFTLogic private immutable sharedNFTLogic;
+    SharedNFTLogic private immutable _sharedNFTLogic;
 
     // Global constructor for factory
-    constructor(SharedNFTLogic _sharedNFTLogic) {
-        sharedNFTLogic = _sharedNFTLogic;
+    constructor(SharedNFTLogic sharedNFTLogic) {
+        _sharedNFTLogic = sharedNFTLogic;
     }
 
     /**
@@ -76,12 +76,12 @@ contract SingleEditionMintable is
       @param _name Name of edition, used in the title as "$NAME NUMBER/TOTAL"
       @param _symbol Symbol of the new token contract
       @param _description Description of edition, used in the description field of the NFT
-      @param _imageUrl Image URL of the edition. Strongly encouraged to be used, if necessary, only animation URL can be used. One of animation and image url need to exist in a edition to render the NFT.
-      @param _imageHash SHA256 of the given image in bytes32 format (0xHASH). If no image is included, the hash can be zero.
-      @param _animationUrl Animation URL of the edition. Not required, but if omitted image URL needs to be included. This follows the opensea spec for NFTs
-      @param _animationHash The associated hash of the animation in sha-256 bytes32 format. If animation is omitted the hash can be zero.
+      @param imageUrl Image URL of the edition. Strongly encouraged to be used, if necessary, only animation URL can be used. One of animation and image url need to exist in a edition to render the NFT.
+      @param imageHash SHA256 of the given image in bytes32 format (0xHASH). If no image is included, the hash can be zero.
+      @param animationUrl Animation URL of the edition. Not required, but if omitted image URL needs to be included. This follows the opensea spec for NFTs
+      @param animationHash The associated hash of the animation in sha-256 bytes32 format. If animation is omitted the hash can be zero.
       @param _editionSize Number of editions that can be minted in total. If 0, unlimited editions can be minted.
-      @param _royaltyBPS BPS of the royalty set on the contract. Can be 0 for no royalty.
+      @param royaltyBPS BPS of the royalty set on the contract. Can be 0 for no royalty.
       @dev Function to create a new edition. Can only be called by the allowed creator
            Sets the only allowed minter to the address that creates/owns the edition.
            This can be re-assigned or updated later
@@ -91,32 +91,32 @@ contract SingleEditionMintable is
         string memory _name,
         string memory _symbol,
         string memory _description,
-        string memory _animationUrl,
-        bytes32 _animationHash,
-        string memory _imageUrl,
-        bytes32 _imageHash,
+        string memory animationUrl,
+        bytes32 animationHash,
+        string memory imageUrl,
+        bytes32 imageHash,
         uint256 _editionSize,
-        uint256 _royaltyBPS
+        uint256 royaltyBPS
     ) public initializer {
         __ERC721_init(_name, _symbol);
         __Ownable_init();
         // Set ownership to original sender of contract call
         transferOwnership(_owner);
         description = _description;
-        animationUrl = _animationUrl;
-        animationHash = _animationHash;
-        imageUrl = _imageUrl;
-        imageHash = _imageHash;
+        _animationUrl = animationUrl;
+        _animationHash = animationHash;
+        _imageUrl = imageUrl;
+        _imageHash = imageHash;
         editionSize = _editionSize;
-        royaltyBPS = _royaltyBPS;
+        _royaltyBPS = royaltyBPS;
         // Set edition id start to be 1 not 0
-        atEditionId.increment();
+        _atEditionId.increment();
     }
 
 
     /// @dev returns the number of minted tokens within the edition
     function totalSupply() public view returns (uint256) {
-        return atEditionId.current() - 1;
+        return _atEditionId.current() - 1;
     }
     /**
         Simple eth-based sales function
@@ -164,10 +164,10 @@ contract SingleEditionMintable is
         if (owner() == msg.sender) {
             return true;
         }
-        if (allowedMinters[address(0x0)]) {
+        if (_allowedMinters[address(0x0)]) {
             return true;
         }
-        return allowedMinters[msg.sender];
+        return _allowedMinters[msg.sender];
     }
 
     /**
@@ -216,7 +216,7 @@ contract SingleEditionMintable is
            This setup is similar to setApprovalForAll in the ERC721 spec.
      */
     function setApprovedMinter(address minter, bool allowed) public onlyOwner {
-        allowedMinters[minter] = allowed;
+        _allowedMinters[minter] = allowed;
     }
 
     /**
@@ -224,11 +224,11 @@ contract SingleEditionMintable is
            Only URLs can be updated (data-uris are supported), hashes cannot be updated.
      */
     function updateEditionURLs(
-        string memory _imageUrl,
-        string memory _animationUrl
+        string memory imageUrl,
+        string memory animationUrl
     ) public onlyOwner {
-        imageUrl = _imageUrl;
-        animationUrl = _animationUrl;
+        _imageUrl = imageUrl;
+        _animationUrl = animationUrl;
     }
 
     /// Returns the number of editions allowed to mint (max_uint256 when open edition)
@@ -237,8 +237,8 @@ contract SingleEditionMintable is
         if (editionSize == 0) {
             return type(uint256).max;
         }
-        // atEditionId is one-indexed hence the need to remove one here
-        return editionSize + 1 - atEditionId.current();
+        // _atEditionId is one-indexed hence the need to remove one here
+        return editionSize + 1 - _atEditionId.current();
     }
 
     /**
@@ -258,22 +258,22 @@ contract SingleEditionMintable is
         internal
         returns (uint256)
     {
-        uint256 startAt = atEditionId.current();
+        uint256 startAt = _atEditionId.current();
         uint256 endAt = startAt + recipients.length - 1;
         require(editionSize == 0 || endAt <= editionSize, "Sold out");
-        while (atEditionId.current() <= endAt) {
+        while (_atEditionId.current() <= endAt) {
             _mint(
-                recipients[atEditionId.current() - startAt],
-                atEditionId.current()
+                recipients[_atEditionId.current() - startAt],
+                _atEditionId.current()
             );
-            atEditionId.increment();
+            _atEditionId.increment();
         }
-        return atEditionId.current();
+        return _atEditionId.current();
     }
 
     /**
       @dev Get URIs for edition NFT
-      @return imageUrl, imageHash, animationUrl, animationHash
+      @return _imageUrl, _imageHash, _animationUrl, _animationHash
      */
     function getURIs()
         public
@@ -285,7 +285,7 @@ contract SingleEditionMintable is
             bytes32
         )
     {
-        return (imageUrl, imageHash, animationUrl, animationHash);
+        return (_imageUrl, _imageHash, _animationUrl, _animationHash);
     }
 
     /**
@@ -301,7 +301,7 @@ contract SingleEditionMintable is
         if (owner() == address(0x0)) {
             return (owner(), 0);
         }
-        return (owner(), (_salePrice * royaltyBPS) / 10_000);
+        return (owner(), (_salePrice * _royaltyBPS) / 10_000);
     }
 
     /**
@@ -318,11 +318,11 @@ contract SingleEditionMintable is
         require(_exists(tokenId), "No token");
 
         return
-            sharedNFTLogic.createMetadataEdition(
+            _sharedNFTLogic.createMetadataEdition(
                 name(),
                 description,
-                imageUrl,
-                animationUrl,
+                _imageUrl,
+                _animationUrl,
                 tokenId,
                 editionSize
             );

@@ -71,7 +71,7 @@ describe("SingleEditionMintable", () => {
     expect(
       (await signer.getBalance())
         .sub(signerBalance)
-        .gte(ethers.utils.parseEther('0.19'))
+        .gte(ethers.utils.parseEther("0.19"))
     ).to.be.true;
   });
 });

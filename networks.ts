@@ -1,5 +1,5 @@
 import { NetworksUserConfig } from "hardhat/types";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 // Setup env from .env file if presetn
 dotenv.config();

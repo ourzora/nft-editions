@@ -21,7 +21,7 @@ contract SingleEditionMintableCreator {
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     /// Counter for current contract id upgraded
-    CountersUpgradeable.Counter private atContract;
+    CountersUpgradeable.Counter private _atContract;
 
     /// Address for implementation of SingleEditionMintable to clone
     address public implementation;
@@ -54,7 +54,7 @@ contract SingleEditionMintableCreator {
         uint256 _editionSize,
         uint256 _royaltyBPS
     ) external returns (uint256) {
-        uint256 newId = atContract.current();
+        uint256 newId = _atContract.current();
         address newContract = ClonesUpgradeable.cloneDeterministic(
             implementation,
             bytes32(abi.encodePacked(newId))
@@ -74,7 +74,7 @@ contract SingleEditionMintableCreator {
         emit CreatedEdition(newId, msg.sender, _editionSize, newContract);
         // Returns the ID of the recently created minting contract
         // Also increments for the next contract creation call
-        atContract.increment();
+        _atContract.increment();
         return newId;
     }
 

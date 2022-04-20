@@ -1,4 +1,4 @@
-name: yarn test
+name: yarn lint
 on: push
 jobs:
   run-test:
@@ -10,4 +10,4 @@ jobs:
         node-version: '16'
     - run: yarn install
     - run: yarn typechain
-    - run: yarn test
+    - run: yarn lint
