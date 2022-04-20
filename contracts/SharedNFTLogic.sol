@@ -82,6 +82,7 @@ contract SharedNFTLogic is IPublicSharedMetadata {
             );
         }
         return
+            // solhint-disable quotes
             abi.encodePacked(
                 '{"name": "',
                 name,
@@ -99,6 +100,7 @@ contract SharedNFTLogic is IPublicSharedMetadata {
                 name,
                 '"}}'
             );
+            // solhint-enable quotes
     }
 
     /// Encodes the argument json bytes into base64-data uri format
@@ -131,6 +133,7 @@ contract SharedNFTLogic is IPublicSharedMetadata {
         bool hasAnimation = bytes(animationUrl).length > 0;
         if (hasImage && hasAnimation) {
             return
+                // solhint-disable quotes
                 string(
                     abi.encodePacked(
                         'image": "',
@@ -144,9 +147,11 @@ contract SharedNFTLogic is IPublicSharedMetadata {
                         '", "'
                     )
                 );
+                // solhint-enable quotes
         }
         if (hasImage) {
             return
+                // solhint-disable quotes
                 string(
                     abi.encodePacked(
                         'image": "',
@@ -156,9 +161,11 @@ contract SharedNFTLogic is IPublicSharedMetadata {
                         '", "'
                     )
                 );
+                // solhint-enable quotes
         }
         if (hasAnimation) {
             return
+                // solhint-disable quotes
                 string(
                     abi.encodePacked(
                         'animation_url": "',
@@ -168,6 +175,7 @@ contract SharedNFTLogic is IPublicSharedMetadata {
                         '", "'
                     )
                 );
+                // solhint-enable quotes
         }
 
         return "";
