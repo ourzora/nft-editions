@@ -51,7 +51,8 @@
     "hardhat-deploy": "^0.8.11",
     "typechain": "^5.1.2",
     "dotenv": "^10.0.0",
-    "solhint": "^3.3.7"
+    "solhint": "^3.3.7",
+    "solidity-coverage": "^0.7.17"
   },
   "dependencies": {
     "ethers": "^5.4.1",
