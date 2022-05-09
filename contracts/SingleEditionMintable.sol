@@ -57,8 +57,15 @@ contract SingleEditionMintable is
     CountersUpgradeable.Counter private _atEditionId;
     // Royalty amount in bps
     uint256 private _royaltyBPS;
+
+
+    enum WhoCanMint{ ONLY_OWNER, VIPS, MEMBERS, ANYONE }
     // Addresses allowed to mint edition
     mapping(address => bool) private _allowedMinters;
+    // VIP Addresses allowed to mint edition
+    mapping(address => bool) private _vipAllowedMinters;
+    // Who can currently mint
+    WhoCanMint _whoCanMint;
 
     // Price for sale
     uint256 public salePrice;
@@ -69,6 +76,7 @@ contract SingleEditionMintable is
     // Global constructor for factory
     constructor(SharedNFTLogic sharedNFTLogic) {
         _sharedNFTLogic = sharedNFTLogic;
+        _whoCanMint = WhoCanMint.ONLY_OWNER;
     }
 
     /**
@@ -161,13 +169,29 @@ contract SingleEditionMintable is
             given edition id.
      */
     function _isAllowedToMint() internal view returns (bool) {
-        if (owner() == msg.sender) {
+        if (_whoCanMint == WhoCanMint.ANYONE) {
             return true;
         }
-        if (_allowedMinters[address(0x0)]) {
-            return true;
+            
+        if (_whoCanMint == WhoCanMint.MEMBERS) {
+            if (_allowedMinters[address(0x0)]) {
+                return true;
+            }          
         }
-        return _allowedMinters[msg.sender];
+
+        if ((_whoCanMint == WhoCanMint.VIPS) || (_whoCanMint == WhoCanMint.MEMBERS)) {
+            if (_vipAllowedMinters[address(0x0)]) {
+                return true;
+            }            
+        }
+
+        if (_whoCanMint == WhoCanMint.ONLY_OWNER) {
+            if (owner() == msg.sender) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -207,6 +231,16 @@ contract SingleEditionMintable is
     }
 
     /**
+      @param minters WhoCanMint enum of minter types
+      @dev Sets the types of users who is allowed to mint.
+     */
+    function setAllowedMinter(WhoCanMint minters) public onlyOwner {
+        require(((minters >= WhoCanMint.ONLY_OWNER) && (minters <= WhoCanMint.ANYONE)), "Needs to be a valid minter type");
+
+        _whoCanMint = minters;
+    }
+
+    /**
       @param minter address to set approved minting status for
       @param allowed boolean if that address is allowed to mint
       @dev Sets the approved minting status of the given address.
@@ -217,6 +251,19 @@ contract SingleEditionMintable is
      */
     function setApprovedMinter(address minter, bool allowed) public onlyOwner {
         _allowedMinters[minter] = allowed;
+    }
+
+    /**
+      @param minter address to set approved minting status for
+      @param allowed boolean if that address is allowed to mint
+      @dev Sets the approved minting status of the given address.
+           This requires that msg.sender is the owner of the given edition id.
+           If the ZeroAddress (address(0x0)) is set as a minter,
+             anyone will be allowed to mint.
+           This setup is similar to setApprovalForAll in the ERC721 spec.
+     */
+    function setApprovedVIPMinter(address minter, bool allowed) public onlyOwner {
+        _vipAllowedMinters[minter] = allowed;
     }
 
     /**
