@@ -25,6 +25,8 @@ call `createEdition` with the given arguments to create a new editions contract:
 - Image URL: IPFS/Arweave URL of the image (image/, gifs are good for previewing images)
 - Image Hash: sha-256 hash of the image, 0x0 if no image url provided
 - Edition Size: Number of this edition, if set to 0 edition is not capped/limited
+- VIP Mint Limit: Number of the edition a VIP can mint when minting is restricted to VIP
+- Member Mint Limit: Number of the edition a member can mint when minting is restricted to members
 - BPS Royalty: 500 = 5%, 1000 = 10%, so on and so forth, set to 0 for no on-chain royalty (not supported by all marketplaces)
 
 ## How do I sell/distribute editions?
@@ -41,16 +43,6 @@ Now that you have a edition, there are multiple options for lazy-minting and sal
 
 1. Find/Deploy the `SingleEditionMintableCreator` contract
 2. Call `createEdition` on the `SingleEditionMintableCreator`
-
-### Through a GUI:
-
-Rinkeby: https://edition-drop.vercel.app/?network=4
-
-Mainnet: https://edition-drop.vercel.app/?network=1
-
-Polygon: https://edition-drop.vercel.app/?network=137
-
-Mumbai: https://edition-drop.vercel.app/?network=80001
 
 ## Developing with these contracts
 
