@@ -1,4 +1,4 @@
-# Expanded NFT Editions
+# Expanded NFTs 
 
 Based on the [Zora NFT Editions](https://github.com/ourzora/nft-editions) contracts.
 

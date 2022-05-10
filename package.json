@@ -1,7 +1,7 @@
 {
-  "name": "@zien/zien-contracts",
+  "name": "@zien/expanded-nfts",
   "version": "1.0.1",
-  "description": "NFT Factory Contracts",
+  "description": "Expanded NFTs Contracts",
   "main": "index.js",
   "author": "Zien",
   "license": "GPL-3.0",
@@ -11,6 +11,10 @@
     "contracts",
     "deployments"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joinzien/expanded-nfts.git"
+  },
   "scripts": {
     "typechain": "hardhat typechain",
     "compile": "hardhat compile",
