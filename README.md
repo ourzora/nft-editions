@@ -64,7 +64,7 @@ Mumbai: https://edition-drop.vercel.app/?network=80001
 
 ### Coverage
 
-`yarn hardhat coverage`
+`yarn coverage`
 
 ### Deploying:
 

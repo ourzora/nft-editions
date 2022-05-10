@@ -20,6 +20,7 @@
     "compile": "hardhat compile",
     "deploy": "hardhat deploy",
     "test": "hardhat test",
+    "coverage": "hardhat coverage",    
     "build": "yarn run prepack",
     "prepack": "hardhat compile",
     "lint": "npx solhint 'contracts/**/*.sol' --fix && npx prettier '**/*.{json,md}' --write"
