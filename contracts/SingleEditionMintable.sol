@@ -34,9 +34,12 @@ contract SingleEditionMintable is
     IERC2981Upgradeable,
     OwnableUpgradeable
 {
+    enum WhoCanMint{ ONLY_OWNER, VIPS, MEMBERS, ANYONE }
+
     using CountersUpgradeable for CountersUpgradeable.Counter;
     event PriceChanged(uint256 amount);
     event EditionSold(uint256 price, address owner);
+    event WhoCanMintChanged(WhoCanMint minters);
 
     // metadata
     string public description;
@@ -58,8 +61,6 @@ contract SingleEditionMintable is
     // Royalty amount in bps
     uint256 private _royaltyBPS;
 
-
-    enum WhoCanMint{ ONLY_OWNER, VIPS, MEMBERS, ANYONE }
     // Addresses allowed to mint edition
     mapping(address => bool) private _allowedMinters;
     // VIP Addresses allowed to mint edition
@@ -238,6 +239,7 @@ contract SingleEditionMintable is
         require(((minters >= WhoCanMint.ONLY_OWNER) && (minters <= WhoCanMint.ANYONE)), "Needs to be a valid minter type");
 
         _whoCanMint = minters;
+        emit WhoCanMintChanged(minters);
     }
 
     /**
