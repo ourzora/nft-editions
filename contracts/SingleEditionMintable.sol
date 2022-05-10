@@ -37,6 +37,7 @@ contract SingleEditionMintable is
     enum WhoCanMint{ ONLY_OWNER, VIPS, MEMBERS, ANYONE }
 
     using CountersUpgradeable for CountersUpgradeable.Counter;
+    
     event PriceChanged(uint256 amount);
     event EditionSold(uint256 price, address owner);
     event WhoCanMintChanged(WhoCanMint minters);
