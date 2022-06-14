@@ -45,6 +45,9 @@ contract SingleEditionMintable is
     // metadata
     string public description;
 
+    // Artists wallet address
+    address _artist;
+
     // Media Urls
     // animation_url field in the metadata
     string private _animationUrl;
@@ -83,6 +86,7 @@ contract SingleEditionMintable is
 
     /**
       @param _owner User that owns and can mint the edition, gets royalty and sales payouts and can update the base url if needed.
+      @param artist User that created the edition
       @param _name Name of edition, used in the title as "$NAME NUMBER/TOTAL"
       @param _symbol Symbol of the new token contract
       @param _description Description of edition, used in the description field of the NFT
@@ -98,6 +102,7 @@ contract SingleEditionMintable is
      */
     function initialize(
         address _owner,
+        address artist,
         string memory _name,
         string memory _symbol,
         string memory _description,
@@ -112,13 +117,17 @@ contract SingleEditionMintable is
         __Ownable_init();
         // Set ownership to original sender of contract call
         transferOwnership(_owner);
+        
         description = _description;
         _animationUrl = animationUrl;
         _animationHash = animationHash;
         _imageUrl = imageUrl;
         _imageHash = imageHash;
+        
+        _artist = artist;
         editionSize = _editionSize;
         _royaltyBPS = royaltyBPS;
+
         // Set edition id start to be 1 not 0
         _atEditionId.increment();
     }

@@ -12,6 +12,10 @@ import {
 describe("SingleEditionMintable", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
+  
+  let artist: SignerWithAddress;
+  let artistAddress: string;  
+
   let dynamicSketch: SingleEditionMintableCreator;
 
   beforeEach(async () => {
@@ -29,10 +33,15 @@ describe("SingleEditionMintable", () => {
 
     signer = (await ethers.getSigners())[0];
     signerAddress = await signer.getAddress();
+
+    artist = (await ethers.getSigners())[1];
+    artistAddress = await signer.getAddress();
+
   });
 
   it("makes a new edition", async () => {
     await dynamicSketch.createEdition(
+      artistAddress,
       "Testing Token",
       "TEST",
       "This is a testing token for all",
@@ -73,6 +82,7 @@ describe("SingleEditionMintable", () => {
     beforeEach(async () => {
       signer1 = (await ethers.getSigners())[1];
       await dynamicSketch.createEdition(
+        artistAddress,
         "Testing Token",
         "TEST",
         "This is a testing token for all",
@@ -133,6 +143,7 @@ describe("SingleEditionMintable", () => {
     it("creates an unbounded edition", async () => {
       // no limit for edition size
       await dynamicSketch.createEdition(
+        artistAddress,
         "Testing Token",
         "TEST",
         "This is a testing token for all",
@@ -223,6 +234,7 @@ describe("SingleEditionMintable", () => {
       await expect(
         minterContract.initialize(
           signerAddress,
+          artistAddress,
           "test name",
           "SYM",
           "description",
@@ -283,6 +295,7 @@ describe("SingleEditionMintable", () => {
       });
       it("sets the correct royalty amount", async () => {
         await dynamicSketch.createEdition(
+          artistAddress,
           "Testing Token",
           "TEST",
           "This is a testing token for all",
@@ -315,6 +328,7 @@ describe("SingleEditionMintable", () => {
     it("mints a large batch", async () => {
       // no limit for edition size
       await dynamicSketch.createEdition(
+        artistAddress,
         "Testing Token",
         "TEST",
         "This is a testing token for all",

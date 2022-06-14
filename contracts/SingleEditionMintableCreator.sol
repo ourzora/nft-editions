@@ -34,6 +34,7 @@ contract SingleEditionMintableCreator {
 
     /// Creates a new edition contract as a factory with a deterministic address
     /// Important: None of these fields (except the Url fields with the same hash) can be changed after calling
+    /// @param _artist User that created the edition
     /// @param _name Name of the edition contract
     /// @param _symbol Symbol of the edition contract
     /// @param _description Metadata: Description of the edition entry
@@ -44,6 +45,7 @@ contract SingleEditionMintableCreator {
     /// @param _editionSize Total size of the edition (number of possible editions)
     /// @param _royaltyBPS BPS amount of royalty
     function createEdition(
+        address _artist,
         string memory _name,
         string memory _symbol,
         string memory _description,
@@ -61,6 +63,7 @@ contract SingleEditionMintableCreator {
         );
         SingleEditionMintable(newContract).initialize(
             msg.sender,
+            _artist,
             _name,
             _symbol,
             _description,

@@ -32,7 +32,11 @@ describe("AllowedMinters", () => {
   });
 
   it("makes a new edition", async () => {
+    const artist = (await ethers.getSigners())[1];
+    const artistAddress = await signer.getAddress();
+
     await dynamicSketch.createEdition(
+      artistAddress,
       "Testing Token",
       "TEST",
       "This is a testing token for all",

@@ -12,6 +12,10 @@ import {
 describe("SingleEditionMintable", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
+
+  let artist: SignerWithAddress;
+  let artistAddress: string;    
+
   let dynamicSketch: SingleEditionMintableCreator;
 
   beforeEach(async () => {
@@ -29,10 +33,14 @@ describe("SingleEditionMintable", () => {
 
     signer = (await ethers.getSigners())[0];
     signerAddress = await signer.getAddress();
+
+    artist = (await ethers.getSigners())[1];
+    artistAddress = await signer.getAddress();    
   });
 
   it("purchases a edition", async () => {
     await dynamicSketch.createEdition(
+      artistAddress,
       "Testing Token",
       "TEST",
       "This is a testing token for all",
