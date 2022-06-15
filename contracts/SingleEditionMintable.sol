@@ -175,8 +175,14 @@ contract SingleEditionMintable is
       @dev This withdraws ETH from the contract to the contract owner.
      */
     function withdraw() external onlyOwner {
+        uint256 currentBalance = address(this).balance;
+        
+        uint256 platformFee = (currentBalance * _royaltyBPS) / 10_000;
+        uint256 artistFee = currentBalance - platformFee;
+
         // No need for gas limit to trusted address.
-        AddressUpgradeable.sendValue(payable(owner()), address(this).balance);
+        AddressUpgradeable.sendValue(payable(owner()), platformFee);
+        AddressUpgradeable.sendValue(payable(_artist), artistFee);
     }
 
     /**
