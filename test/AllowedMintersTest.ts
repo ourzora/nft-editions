@@ -46,7 +46,9 @@ describe("AllowedMinters", () => {
       "0x0000000000000000000000000000000000000000000000000000000000000000",
       // 1% royalty since BPS
       10,
-      10
+      10,
+      // 50% split since BPS
+      500
     );
 
     const editionResult = await dynamicSketch.getEditionAtId(0);

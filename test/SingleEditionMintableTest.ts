@@ -51,7 +51,9 @@ describe("SingleEditionMintable", () => {
       "0x0000000000000000000000000000000000000000000000000000000000000000",
       // 1% royalty since BPS
       10,
-      10
+      10,
+      // 50% split since BPS
+      500      
     );
 
     const editionResult = await dynamicSketch.getEditionAtId(0);
@@ -91,7 +93,9 @@ describe("SingleEditionMintable", () => {
         "",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         10,
-        10
+        10,
+        // 50% split since BPS
+        500        
       );
 
       const editionResult = await dynamicSketch.getEditionAtId(0);
@@ -152,7 +156,9 @@ describe("SingleEditionMintable", () => {
         "",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         0,
-        0
+        0,
+        // 50% split since BPS
+        500
       );
 
       const editionResult = await dynamicSketch.getEditionAtId(1);
@@ -244,7 +250,8 @@ describe("SingleEditionMintable", () => {
           "0x0000000000000000000000000000000000000000000000000000000000000000",
           12,
           12,
-          12
+          // 50% split since BPS
+          500          
         )
       ).to.be.revertedWith("Initializable: contract is already initialized");
       await minterContract.mintEdition(await signer1.getAddress());
@@ -306,7 +313,9 @@ describe("SingleEditionMintable", () => {
           "0x0000000000000000000000000000000000000000000000000000000000000000",
           // 2% royalty since BPS
           200,
-          200
+          200,
+          // 50% split since BPS
+          500          
         );
 
         const editionResult = await dynamicSketch.getEditionAtId(1);
@@ -338,7 +347,9 @@ describe("SingleEditionMintable", () => {
         "",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         0,
-        0
+        0,
+        // 50% split since BPS
+        500
       );
 
       const editionResult = await dynamicSketch.getEditionAtId(1);

@@ -130,6 +130,7 @@ contract SingleEditionMintable is
         _artist = artist;
         editionSize = _editionSize;
         _royaltyBPS = royaltyBPS;
+        _splitBPS = splitBPS;
 
         // Set edition id start to be 1 not 0
         _atEditionId.increment();

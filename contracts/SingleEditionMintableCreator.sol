@@ -54,13 +54,14 @@ contract SingleEditionMintableCreator {
         string memory _imageUrl,
         bytes32 _imageHash,
         uint256 _editionSize,
-        uint256 _royaltyBPS
+        uint256 _royaltyBPS,
+        uint256 _splitBPS
     ) external returns (uint256) {
-        uint256 newId = _atContract.current();
         address newContract = ClonesUpgradeable.cloneDeterministic(
             implementation,
-            bytes32(abi.encodePacked(newId))
+            bytes32(abi.encodePacked(_atContract.current()))
         );
+
         SingleEditionMintable(newContract).initialize(
             msg.sender,
             _artist,
@@ -73,8 +74,10 @@ contract SingleEditionMintableCreator {
             _imageHash,
             _editionSize,
             _royaltyBPS,
-            0
+            _splitBPS
         );
+
+        uint256 newId = _atContract.current();        
         emit CreatedEdition(newId, msg.sender, _editionSize, newContract);
         // Returns the ID of the recently created minting contract
         // Also increments for the next contract creation call
