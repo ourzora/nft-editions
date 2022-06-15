@@ -12,6 +12,10 @@ import {
 describe("SingleEditionMintable", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
+  
+  let artist: SignerWithAddress;
+  let artistAddress: string;  
+
   let dynamicSketch: SingleEditionMintableCreator;
 
   beforeEach(async () => {
@@ -29,10 +33,15 @@ describe("SingleEditionMintable", () => {
 
     signer = (await ethers.getSigners())[0];
     signerAddress = await signer.getAddress();
+
+    artist = (await ethers.getSigners())[1];
+    artistAddress = await signer.getAddress();
+
   });
 
   it("makes a new edition", async () => {
     await dynamicSketch.createEdition(
+      artistAddress,
       "Testing Token",
       "TEST",
       "This is a testing token for all",
@@ -42,7 +51,9 @@ describe("SingleEditionMintable", () => {
       "0x0000000000000000000000000000000000000000000000000000000000000000",
       // 1% royalty since BPS
       10,
-      10
+      10,
+      // 50% split since BPS
+      500      
     );
 
     const editionResult = await dynamicSketch.getEditionAtId(0);
@@ -73,6 +84,7 @@ describe("SingleEditionMintable", () => {
     beforeEach(async () => {
       signer1 = (await ethers.getSigners())[1];
       await dynamicSketch.createEdition(
+        artistAddress,
         "Testing Token",
         "TEST",
         "This is a testing token for all",
@@ -81,7 +93,9 @@ describe("SingleEditionMintable", () => {
         "",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         10,
-        10
+        10,
+        // 50% split since BPS
+        500        
       );
 
       const editionResult = await dynamicSketch.getEditionAtId(0);
@@ -133,6 +147,7 @@ describe("SingleEditionMintable", () => {
     it("creates an unbounded edition", async () => {
       // no limit for edition size
       await dynamicSketch.createEdition(
+        artistAddress,
         "Testing Token",
         "TEST",
         "This is a testing token for all",
@@ -141,7 +156,9 @@ describe("SingleEditionMintable", () => {
         "",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         0,
-        0
+        0,
+        // 50% split since BPS
+        500
       );
 
       const editionResult = await dynamicSketch.getEditionAtId(1);
@@ -223,6 +240,7 @@ describe("SingleEditionMintable", () => {
       await expect(
         minterContract.initialize(
           signerAddress,
+          artistAddress,
           "test name",
           "SYM",
           "description",
@@ -231,7 +249,9 @@ describe("SingleEditionMintable", () => {
           "uri",
           "0x0000000000000000000000000000000000000000000000000000000000000000",
           12,
-          12
+          12,
+          // 50% split since BPS
+          500          
         )
       ).to.be.revertedWith("Initializable: contract is already initialized");
       await minterContract.mintEdition(await signer1.getAddress());
@@ -283,6 +303,7 @@ describe("SingleEditionMintable", () => {
       });
       it("sets the correct royalty amount", async () => {
         await dynamicSketch.createEdition(
+          artistAddress,
           "Testing Token",
           "TEST",
           "This is a testing token for all",
@@ -292,7 +313,9 @@ describe("SingleEditionMintable", () => {
           "0x0000000000000000000000000000000000000000000000000000000000000000",
           // 2% royalty since BPS
           200,
-          200
+          200,
+          // 50% split since BPS
+          500          
         );
 
         const editionResult = await dynamicSketch.getEditionAtId(1);
@@ -315,6 +338,7 @@ describe("SingleEditionMintable", () => {
     it("mints a large batch", async () => {
       // no limit for edition size
       await dynamicSketch.createEdition(
+        artistAddress,
         "Testing Token",
         "TEST",
         "This is a testing token for all",
@@ -323,7 +347,9 @@ describe("SingleEditionMintable", () => {
         "",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         0,
-        0
+        0,
+        // 50% split since BPS
+        500
       );
 
       const editionResult = await dynamicSketch.getEditionAtId(1);

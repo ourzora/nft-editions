@@ -34,6 +34,7 @@ contract SingleEditionMintableCreator {
 
     /// Creates a new edition contract as a factory with a deterministic address
     /// Important: None of these fields (except the Url fields with the same hash) can be changed after calling
+    /// @param _artist User that created the edition
     /// @param _name Name of the edition contract
     /// @param _symbol Symbol of the edition contract
     /// @param _description Metadata: Description of the edition entry
@@ -44,6 +45,7 @@ contract SingleEditionMintableCreator {
     /// @param _editionSize Total size of the edition (number of possible editions)
     /// @param _royaltyBPS BPS amount of royalty
     function createEdition(
+        address _artist,
         string memory _name,
         string memory _symbol,
         string memory _description,
@@ -52,15 +54,17 @@ contract SingleEditionMintableCreator {
         string memory _imageUrl,
         bytes32 _imageHash,
         uint256 _editionSize,
-        uint256 _royaltyBPS
+        uint256 _royaltyBPS,
+        uint256 _splitBPS
     ) external returns (uint256) {
-        uint256 newId = _atContract.current();
         address newContract = ClonesUpgradeable.cloneDeterministic(
             implementation,
-            bytes32(abi.encodePacked(newId))
+            bytes32(abi.encodePacked(_atContract.current()))
         );
+
         SingleEditionMintable(newContract).initialize(
             msg.sender,
+            _artist,
             _name,
             _symbol,
             _description,
@@ -69,8 +73,11 @@ contract SingleEditionMintableCreator {
             _imageUrl,
             _imageHash,
             _editionSize,
-            _royaltyBPS
+            _royaltyBPS,
+            _splitBPS
         );
+
+        uint256 newId = _atContract.current();        
         emit CreatedEdition(newId, msg.sender, _editionSize, newContract);
         // Returns the ID of the recently created minting contract
         // Also increments for the next contract creation call

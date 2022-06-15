@@ -9,13 +9,9 @@ import {
   SingleEditionMintable,
 } from "../typechain";
 
-describe("SingleEditionMintable", () => {
+describe("AllowedMinters", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
-
-  let artist: SignerWithAddress;
-  let artistAddress: string;    
-
   let dynamicSketch: SingleEditionMintableCreator;
 
   beforeEach(async () => {
@@ -33,12 +29,12 @@ describe("SingleEditionMintable", () => {
 
     signer = (await ethers.getSigners())[0];
     signerAddress = await signer.getAddress();
-
-    artist = (await ethers.getSigners())[1];
-    artistAddress = await signer.getAddress();    
   });
 
-  it("purchases a edition", async () => {
+  it("makes a new edition", async () => {
+    const artist = (await ethers.getSigners())[1];
+    const artistAddress = await signer.getAddress();
+
     await dynamicSketch.createEdition(
       artistAddress,
       "Testing Token",
@@ -48,10 +44,11 @@ describe("SingleEditionMintable", () => {
       "0x0000000000000000000000000000000000000000000000000000000000000000",
       "",
       "0x0000000000000000000000000000000000000000000000000000000000000000",
+      // 1% royalty since BPS
       10,
       10,
       // 50% split since BPS
-      500        
+      500
     );
 
     const editionResult = await dynamicSketch.getEditionAtId(0);
@@ -61,27 +58,19 @@ describe("SingleEditionMintable", () => {
     )) as SingleEditionMintable;
     expect(await minterContract.name()).to.be.equal("Testing Token");
     expect(await minterContract.symbol()).to.be.equal("TEST");
-
-    const [_, s2] = await ethers.getSigners();
-    await expect(minterContract.purchase()).to.be.revertedWith("Not for sale");
-    await expect(
-      minterContract.connect(s2).setSalePrice(ethers.utils.parseEther("0.2"))
-    ).to.be.revertedWith("Ownable: caller is not the owner");
-    expect(
-      await minterContract.setSalePrice(ethers.utils.parseEther("0.2"))
-    ).to.emit(minterContract, "PriceChanged");
-    expect(
-      await minterContract
-        .connect(s2)
-        .purchase({ value: ethers.utils.parseEther("0.2") })
-    ).to.emit(minterContract, "EditionSold");
-    const signerBalance = await signer.getBalance();
-    await minterContract.withdraw();
-    // Some ETH is lost from withdraw contract interaction.
-    expect(
-      (await signer.getBalance())
-        .sub(signerBalance)
-        .gte(ethers.utils.parseEther("0.19"))
-    ).to.be.true;
+    const editionUris = await minterContract.getURIs();
+    expect(editionUris[0]).to.be.equal("");
+    expect(editionUris[1]).to.be.equal(
+      "0x0000000000000000000000000000000000000000000000000000000000000000"
+    );
+    expect(editionUris[2]).to.be.equal(
+      "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy"
+    );
+    expect(editionUris[3]).to.be.equal(
+      "0x0000000000000000000000000000000000000000000000000000000000000000"
+    );
+    expect(await minterContract.editionSize()).to.be.equal(10);
+    // TODO(iain): check bps
+    expect(await minterContract.owner()).to.be.equal(signerAddress);
   });
 });

@@ -34,12 +34,19 @@ contract SingleEditionMintable is
     IERC2981Upgradeable,
     OwnableUpgradeable
 {
+    enum WhoCanMint{ ONLY_OWNER, VIPS, MEMBERS, ANYONE }
+
     using CountersUpgradeable for CountersUpgradeable.Counter;
+    
     event PriceChanged(uint256 amount);
     event EditionSold(uint256 price, address owner);
+    event WhoCanMintChanged(WhoCanMint minters);
 
     // metadata
     string public description;
+
+    // Artists wallet address
+    address _artist;
 
     // Media Urls
     // animation_url field in the metadata
@@ -57,9 +64,9 @@ contract SingleEditionMintable is
     CountersUpgradeable.Counter private _atEditionId;
     // Royalty amount in bps
     uint256 private _royaltyBPS;
+    // Split amount to the platforms. the artist in bps
+    uint256 private _splitBPS;
 
-
-    enum WhoCanMint{ ONLY_OWNER, VIPS, MEMBERS, ANYONE }
     // Addresses allowed to mint edition
     mapping(address => bool) private _allowedMinters;
     // VIP Addresses allowed to mint edition
@@ -81,6 +88,7 @@ contract SingleEditionMintable is
 
     /**
       @param _owner User that owns and can mint the edition, gets royalty and sales payouts and can update the base url if needed.
+      @param artist User that created the edition
       @param _name Name of edition, used in the title as "$NAME NUMBER/TOTAL"
       @param _symbol Symbol of the new token contract
       @param _description Description of edition, used in the description field of the NFT
@@ -96,6 +104,7 @@ contract SingleEditionMintable is
      */
     function initialize(
         address _owner,
+        address artist,
         string memory _name,
         string memory _symbol,
         string memory _description,
@@ -104,19 +113,25 @@ contract SingleEditionMintable is
         string memory imageUrl,
         bytes32 imageHash,
         uint256 _editionSize,
-        uint256 royaltyBPS
+        uint256 royaltyBPS,
+        uint256 splitBPS
     ) public initializer {
         __ERC721_init(_name, _symbol);
         __Ownable_init();
         // Set ownership to original sender of contract call
         transferOwnership(_owner);
+        
         description = _description;
         _animationUrl = animationUrl;
         _animationHash = animationHash;
         _imageUrl = imageUrl;
         _imageHash = imageHash;
+        
+        _artist = artist;
         editionSize = _editionSize;
         _royaltyBPS = royaltyBPS;
+        _splitBPS = splitBPS;
+
         // Set edition id start to be 1 not 0
         _atEditionId.increment();
     }
@@ -160,8 +175,14 @@ contract SingleEditionMintable is
       @dev This withdraws ETH from the contract to the contract owner.
      */
     function withdraw() external onlyOwner {
+        uint256 currentBalance = address(this).balance;
+        
+        uint256 platformFee = (currentBalance * _royaltyBPS) / 10_000;
+        uint256 artistFee = currentBalance - platformFee;
+
         // No need for gas limit to trusted address.
-        AddressUpgradeable.sendValue(payable(owner()), address(this).balance);
+        AddressUpgradeable.sendValue(payable(owner()), platformFee);
+        AddressUpgradeable.sendValue(payable(_artist), artistFee);
     }
 
     /**
@@ -238,6 +259,7 @@ contract SingleEditionMintable is
         require(((minters >= WhoCanMint.ONLY_OWNER) && (minters <= WhoCanMint.ANYONE)), "Needs to be a valid minter type");
 
         _whoCanMint = minters;
+        emit WhoCanMintChanged(minters);
     }
 
     /**
