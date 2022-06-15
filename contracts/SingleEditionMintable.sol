@@ -64,6 +64,8 @@ contract SingleEditionMintable is
     CountersUpgradeable.Counter private _atEditionId;
     // Royalty amount in bps
     uint256 private _royaltyBPS;
+    // Split amount to the platforms. the artist in bps
+    uint256 private _splitBPS;
 
     // Addresses allowed to mint edition
     mapping(address => bool) private _allowedMinters;
