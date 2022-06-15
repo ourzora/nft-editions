@@ -74,7 +74,11 @@ contract SingleEditionMintable is
     // Who can currently mint
     WhoCanMint _whoCanMint;
 
-    // Price for sale
+    // Price for VIP sales
+    uint256 private _vipSalePrice;
+    // Price for member sales
+    uint256 private _membersSalePrice;
+    // Price for general sales
     uint256 public salePrice;
 
     // NFT rendering logic contract
@@ -147,16 +151,35 @@ contract SingleEditionMintable is
      */
 
     /**
-      @dev This allows the user to purchase a edition edition
+      @dev This allows the user to purchase an edition
            at the given price in the contract.
      */
     function purchase() external payable returns (uint256) {
-        require(salePrice > 0, "Not for sale");
-        require(msg.value == salePrice, "Wrong price");
+        uint256 currentPrice = currentSalesPrice();
+
+        require(currentPrice > 0, "Not for sale");
+        require(msg.value == currentPrice, "Wrong price");
+
         address[] memory toMint = new address[](1);
         toMint[0] = msg.sender;
-        emit EditionSold(salePrice, msg.sender);
+        emit EditionSold(currentPrice, msg.sender);
         return _mintEditions(toMint);
+    }
+
+    /**
+      @dev returns the current ETH sales price
+           based on who can currently mint.
+     */
+    function currentSalesPrice() internal view returns (uint256){
+        if (_whoCanMint == WhoCanMint.VIPS) {
+            return _vipSalePrice;
+        } else if (_whoCanMint == WhoCanMint.MEMBERS) {
+            return _membersSalePrice;
+        } else if (_whoCanMint == WhoCanMint.ANYONE) {
+            return salePrice;
+        } 
+            
+        return 0;       
     }
 
     /**
@@ -168,8 +191,44 @@ contract SingleEditionMintable is
      */
     function setSalePrice(uint256 _salePrice) external onlyOwner {
         salePrice = _salePrice;
+
+        _whoCanMint = WhoCanMint.ANYONE;
+
+        emit WhoCanMintChanged(_whoCanMint);
         emit PriceChanged(salePrice);
     }
+
+    /**
+      @param _salePrice if sale price is 0 sale is stopped, otherwise that amount 
+                       of ETH is needed to start the sale.
+      @dev This sets the VIP ETH sales price
+           Setting a sales price allows users to mint the edition until it sells out.
+           For more granular sales, use an external sales contract.
+     */
+    function setVIPSalePrice(uint256 _salePrice) external onlyOwner {
+        _vipSalePrice = _salePrice;
+
+        _whoCanMint = WhoCanMint.VIPS;
+
+        emit WhoCanMintChanged(_whoCanMint);
+        emit PriceChanged(salePrice);
+    }
+
+     /**
+      @param _salePrice if sale price is 0 sale is stopped, otherwise that amount 
+                       of ETH is needed to start the sale.
+      @dev This sets the members ETH sales price
+           Setting a sales price allows users to mint the edition until it sells out.
+           For more granular sales, use an external sales contract.
+     */
+    function setMembersSalePrice(uint256 _salePrice) external onlyOwner {
+        _membersSalePrice = _salePrice;
+
+        _whoCanMint = WhoCanMint.MEMBERS;
+
+        emit WhoCanMintChanged(_whoCanMint);
+        emit PriceChanged(salePrice);
+    }   
 
     /**
       @dev This withdraws ETH from the contract to the contract owner.
@@ -320,7 +379,7 @@ contract SingleEditionMintable is
     }
 
     /**
-      @dev Private function to mint als without any access checks.
+      @dev Private function to mint without any access checks.
            Called by the public edition minting functions.
      */
     function _mintEditions(address[] memory recipients)
