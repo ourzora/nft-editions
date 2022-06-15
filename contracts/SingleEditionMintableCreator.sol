@@ -72,7 +72,8 @@ contract SingleEditionMintableCreator {
             _imageUrl,
             _imageHash,
             _editionSize,
-            _royaltyBPS
+            _royaltyBPS,
+            0
         );
         emit CreatedEdition(newId, msg.sender, _editionSize, newContract);
         // Returns the ID of the recently created minting contract

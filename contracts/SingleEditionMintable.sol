@@ -111,7 +111,8 @@ contract SingleEditionMintable is
         string memory imageUrl,
         bytes32 imageHash,
         uint256 _editionSize,
-        uint256 royaltyBPS
+        uint256 royaltyBPS,
+        uint256 splitBPS
     ) public initializer {
         __ERC721_init(_name, _symbol);
         __Ownable_init();

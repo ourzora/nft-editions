@@ -243,6 +243,7 @@ describe("SingleEditionMintable", () => {
           "uri",
           "0x0000000000000000000000000000000000000000000000000000000000000000",
           12,
+          12,
           12
         )
       ).to.be.revertedWith("Initializable: contract is already initialized");
