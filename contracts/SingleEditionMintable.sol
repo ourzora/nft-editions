@@ -36,13 +36,15 @@ contract SingleEditionMintable is
 {
     enum WhoCanMint{ ONLY_OWNER, VIPS, MEMBERS, ANYONE }
 
+    enum ExpandedNFTStates{ MINTED, REDEEM_STARTED, SET_OFFER_TERMS, ACCEPTED_OFFER, PRODUCTION_COMPLETE, ACCEPTED_DELIVERY }
+
     using CountersUpgradeable for CountersUpgradeable.Counter;
     
     event PriceChanged(uint256 amount);
     event EditionSold(uint256 price, address owner);
     event WhoCanMintChanged(WhoCanMint minters);
 
-    // metadata
+    // metadataExpandedNFTStates{ MINTED, REDEEM_STARTED, SET_OFFER_TERMS, ACCEPTED_OFFER, PRODUCTION_COMPLETE, ACCEPTED_DELIVERY }
     string public description;
 
     // Artists wallet address
@@ -254,13 +256,13 @@ contract SingleEditionMintable is
         }
             
         if (_whoCanMint == WhoCanMint.MEMBERS) {
-            if (_allowedMinters[address(0x0)]) {
+            if (_allowedMinters[msg.sender]) {
                 return true;
             }          
         }
 
         if ((_whoCanMint == WhoCanMint.VIPS) || (_whoCanMint == WhoCanMint.MEMBERS)) {
-            if (_vipAllowedMinters[address(0x0)]) {
+            if (_vipAllowedMinters[msg.sender]) {
                 return true;
             }            
         }
