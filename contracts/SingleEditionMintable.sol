@@ -56,7 +56,7 @@ contract SingleEditionMintable is
     string public description;
 
     // Artists wallet address
-    address _artist;
+    address private _artist;
 
     // Minted
 
@@ -99,13 +99,11 @@ contract SingleEditionMintable is
     // VIP Addresses allowed to mint edition
     mapping(address => bool) private _vipAllowedMinters;
     // Who can currently mint
-    WhoCanMint _whoCanMint;
-
+    WhoCanMint private _whoCanMint;
 
     // Hashmap of the Edition ID to the current 
     mapping(uint256 => ExpandedNFTStates) private _editionState;
     mapping(uint256 => uint256) private _editionFee; 
-
 
     // Price for VIP sales
     uint256 private _vipSalePrice;
@@ -188,7 +186,7 @@ contract SingleEditionMintable is
            at the given price in the contract.
      */
     function purchase() external payable returns (uint256) {
-        uint256 currentPrice = currentSalesPrice();
+        uint256 currentPrice = _currentSalesPrice();
 
         require(currentPrice > 0, "Not for sale");
         require(msg.value == currentPrice, "Wrong price");
@@ -203,7 +201,7 @@ contract SingleEditionMintable is
       @dev returns the current ETH sales price
            based on who can currently mint.
      */
-    function currentSalesPrice() internal view returns (uint256){
+    function _currentSalesPrice() internal view returns (uint256){
         if (_whoCanMint == WhoCanMint.VIPS) {
             return _vipSalePrice;
         } else if (_whoCanMint == WhoCanMint.MEMBERS) {
