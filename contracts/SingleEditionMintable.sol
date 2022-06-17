@@ -36,7 +36,7 @@ contract SingleEditionMintable is
 {
     enum WhoCanMint{ ONLY_OWNER, VIPS, MEMBERS, ANYONE }
 
-    enum ExpandedNFTStates{ MINTED, REDEEM_STARTED, SET_OFFER_TERMS, ACCEPTED_OFFER, PRODUCTION_COMPLETE, REDEEMED }
+    enum ExpandedNFTStates{ UNMINTED, MINTED, REDEEM_STARTED, SET_OFFER_TERMS, ACCEPTED_OFFER, PRODUCTION_COMPLETE, REDEEMED }
 
     using CountersUpgradeable for CountersUpgradeable.Counter;
     
@@ -51,6 +51,31 @@ contract SingleEditionMintable is
     event OfferRejected(uint256 tokenId);
     event ProductionComplete(uint256 tokenId);
     event DeliveryAccepted(uint256 tokenId);
+
+    struct PerToken { 
+        // animation_url field in the metadata
+        string redeemedAnimationUrl;
+
+        // Hash for the associated animation
+        bytes32 redeemedAnimationHash;
+
+        // Image in the metadata
+        string redeemedImageUrl;
+
+        // Hash for the associated image
+        bytes32 redeemedImageHash;
+
+        // Condition report in the metadata
+        string conditionReportUrl;
+
+        // Hash for the condition report
+        bytes32 conditionReportHash;
+
+        // Hashmap of the Edition ID to the current 
+        ExpandedNFTStates editionState;
+        uint256 editionFee; 
+    }
+
 
     // metadata
     string public description;
@@ -69,26 +94,15 @@ contract SingleEditionMintable is
     // Hash for the associated image
     bytes32 private _imageHash;
 
-    // Redeemed 
-
-    // animation_url field in the metadata
-    mapping(uint256 => string) private _redeemedAnimationUrl;
-    // Hash for the associated animation
-    mapping(uint256 => bytes32) private _redeemedAnimationHash;
-    // Image in the metadata
-    mapping(uint256 => string) private _redeemedImageUrl;
-    // Hash for the associated image
-    mapping(uint256 => bytes32) private _redeemedImageHash;
-
-    // Condition report in the metadata
-    mapping(uint256 => string) private _conditionReportUrl;
-    // Hash for the condition report
-    mapping(uint256 => bytes32) private _conditionReportHash;
+    // Per Token data
+    mapping(uint256 => PerToken) private _perTokenMetadata;
 
     // Total size of edition that can be minted
     uint256 public editionSize;
+
     // Current token id minted
     CountersUpgradeable.Counter private _atEditionId;
+
     // Royalty amount in bps
     uint256 private _royaltyBPS;
     // Split amount to the platforms. the artist in bps
@@ -98,14 +112,11 @@ contract SingleEditionMintable is
     mapping(address => bool) private _allowedMinters;
     // VIP Addresses allowed to mint edition
     mapping(address => bool) private _vipAllowedMinters;
+
     // Who can currently mint
     WhoCanMint private _whoCanMint;
 
-    // Hashmap of the Edition ID to the current 
-    mapping(uint256 => ExpandedNFTStates) private _editionState;
-    mapping(uint256 => uint256) private _editionFee; 
-
-    // Price for VIP sales
+     // Price for VIP sales
     uint256 private _vipSalePrice;
     // Price for member sales
     uint256 private _membersSalePrice;
@@ -413,18 +424,18 @@ contract SingleEditionMintable is
         require(_exists(tokenId), "No token");
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
 
-        require((_editionState[tokenId] == ExpandedNFTStates.MINTED), "You currently can not redeem");
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.MINTED), "You currently can not redeem");
 
-        _editionState[tokenId] = ExpandedNFTStates.REDEEM_STARTED;
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.REDEEM_STARTED;
         emit RedeemStarted(tokenId, _msgSender());
     }
 
     function setOfferTerms(uint256 tokenId, uint256 fee) public onlyOwner {
         require(_exists(tokenId), "No token");        
-        require((_editionState[tokenId] == ExpandedNFTStates.REDEEM_STARTED), "Wrong state");
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.REDEEM_STARTED), "Wrong state");
 
-        _editionState[tokenId] = ExpandedNFTStates.SET_OFFER_TERMS;
-        _editionFee[tokenId] = fee;
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.SET_OFFER_TERMS;
+        _perTokenMetadata[tokenId].editionFee = fee;
 
         emit OfferTermsSet(tokenId);
     }
@@ -433,9 +444,9 @@ contract SingleEditionMintable is
         require(_exists(tokenId), "No token");        
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
 
-        require((_editionState[tokenId] == ExpandedNFTStates.SET_OFFER_TERMS), "You currently can not redeem");
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.SET_OFFER_TERMS), "You currently can not redeem");
 
-        _editionState[tokenId] = ExpandedNFTStates.MINTED;
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.MINTED;
 
         emit OfferRejected(tokenId);
     }
@@ -443,10 +454,10 @@ contract SingleEditionMintable is
     function acceptOfferTerms(uint256 tokenId) external payable  {
         require(_exists(tokenId), "No token");        
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
-        require((_editionState[tokenId] == ExpandedNFTStates.SET_OFFER_TERMS), "You currently can not redeem");
-        require(msg.value == _editionFee[tokenId], "Wrong price");
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.SET_OFFER_TERMS), "You currently can not redeem");
+        require(msg.value == _perTokenMetadata[tokenId].editionFee, "Wrong price");
 
-        _editionState[tokenId] = ExpandedNFTStates.ACCEPTED_OFFER;
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.ACCEPTED_OFFER;
 
         emit OfferAccepted(tokenId);
     }
@@ -462,18 +473,18 @@ contract SingleEditionMintable is
         bytes32 conditionReportHash               
     ) public onlyOwner {
         require(_exists(tokenId), "No token");        
-        require((_editionState[tokenId] == ExpandedNFTStates.ACCEPTED_OFFER), "You currently can not redeem");
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.ACCEPTED_OFFER), "You currently can not redeem");
 
         // Set the NFT to display as redeemed
         description = _description;
-        _redeemedAnimationUrl[tokenId] = animationUrl;
-        _redeemedAnimationHash[tokenId] = animationHash;
-        _redeemedImageUrl[tokenId] = imageUrl;
-        _redeemedImageHash[tokenId] = imageHash;
-        _conditionReportUrl[tokenId] = conditionReportUrl;
-        _conditionReportHash[tokenId] = conditionReportHash;
+        _perTokenMetadata[tokenId].redeemedAnimationUrl = animationUrl;
+        _perTokenMetadata[tokenId].redeemedAnimationHash = animationHash;
+        _perTokenMetadata[tokenId].redeemedImageUrl = imageUrl;
+        _perTokenMetadata[tokenId].redeemedImageHash = imageHash;
+        _perTokenMetadata[tokenId].conditionReportUrl = conditionReportUrl;
+        _perTokenMetadata[tokenId].conditionReportHash = conditionReportHash;
 
-        _editionState[tokenId] = ExpandedNFTStates.PRODUCTION_COMPLETE;
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.PRODUCTION_COMPLETE;
 
         emit ProductionComplete(tokenId);
     }
@@ -482,9 +493,9 @@ contract SingleEditionMintable is
         require(_exists(tokenId), "No token");        
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
 
-        require((_editionState[tokenId] == ExpandedNFTStates.PRODUCTION_COMPLETE), "You currently can not redeem");
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.PRODUCTION_COMPLETE), "You currently can not redeem");
 
-        _editionState[tokenId] = ExpandedNFTStates.REDEEMED;
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.REDEEMED;
 
         emit OfferRejected(tokenId);
     }
@@ -506,7 +517,7 @@ contract SingleEditionMintable is
                 _atEditionId.current()
             );
 
-            _editionState[_atEditionId.current()] = ExpandedNFTStates.MINTED;
+            _perTokenMetadata[_atEditionId.current()].editionState = ExpandedNFTStates.MINTED;
 
             _atEditionId.increment();
         }
@@ -543,7 +554,7 @@ contract SingleEditionMintable is
             bytes32
         )
     {
-        return (_conditionReportUrl[tokenId], _conditionReportHash[tokenId]);
+        return (_perTokenMetadata[tokenId].conditionReportUrl, _perTokenMetadata[tokenId].conditionReportHash);
     }
 
     /**
