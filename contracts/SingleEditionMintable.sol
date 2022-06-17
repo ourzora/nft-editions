@@ -76,6 +76,19 @@ contract SingleEditionMintable is
         uint256 editionFee; 
     }
 
+    struct Pricing { 
+        // Royalty amount in bps
+        uint256 royaltyBPS;
+
+        // Split amount to the platforms. the artist in bps
+        uint256 splitBPS;
+
+        // Price for VIP sales
+        uint256 vipSalePrice;
+
+        // Price for member sales
+        uint256 membersSalePrice;        
+    }
 
     // metadata
     string public description;
@@ -103,11 +116,6 @@ contract SingleEditionMintable is
     // Current token id minted
     CountersUpgradeable.Counter private _atEditionId;
 
-    // Royalty amount in bps
-    uint256 private _royaltyBPS;
-    // Split amount to the platforms. the artist in bps
-    uint256 private _splitBPS;
-
     // Addresses allowed to mint edition
     mapping(address => bool) private _allowedMinters;
     // VIP Addresses allowed to mint edition
@@ -116,10 +124,8 @@ contract SingleEditionMintable is
     // Who can currently mint
     WhoCanMint private _whoCanMint;
 
-     // Price for VIP sales
-    uint256 private _vipSalePrice;
-    // Price for member sales
-    uint256 private _membersSalePrice;
+    Pricing private _pricing;
+
     // Price for general sales
     uint256 public salePrice;
 
@@ -175,8 +181,8 @@ contract SingleEditionMintable is
         
         _artist = artist;
         editionSize = _editionSize;
-        _royaltyBPS = royaltyBPS;
-        _splitBPS = splitBPS;
+        _pricing.royaltyBPS = royaltyBPS;
+        _pricing.splitBPS = splitBPS;
 
         // Set edition id start to be 1 not 0
         _atEditionId.increment();
@@ -214,9 +220,9 @@ contract SingleEditionMintable is
      */
     function _currentSalesPrice() internal view returns (uint256){
         if (_whoCanMint == WhoCanMint.VIPS) {
-            return _vipSalePrice;
+            return _pricing.vipSalePrice;
         } else if (_whoCanMint == WhoCanMint.MEMBERS) {
-            return _membersSalePrice;
+            return _pricing.membersSalePrice;
         } else if (_whoCanMint == WhoCanMint.ANYONE) {
             return salePrice;
         } 
@@ -248,7 +254,7 @@ contract SingleEditionMintable is
            For more granular sales, use an external sales contract.
      */
     function setVIPSalePrice(uint256 _salePrice) external onlyOwner {
-        _vipSalePrice = _salePrice;
+        _pricing.vipSalePrice = _salePrice;
 
         _whoCanMint = WhoCanMint.VIPS;
 
@@ -264,7 +270,7 @@ contract SingleEditionMintable is
            For more granular sales, use an external sales contract.
      */
     function setMembersSalePrice(uint256 _salePrice) external onlyOwner {
-        _membersSalePrice = _salePrice;
+        _pricing.membersSalePrice = _salePrice;
 
         _whoCanMint = WhoCanMint.MEMBERS;
 
@@ -278,7 +284,7 @@ contract SingleEditionMintable is
     function withdraw() external onlyOwner {
         uint256 currentBalance = address(this).balance;
         
-        uint256 platformFee = (currentBalance * _royaltyBPS) / 10_000;
+        uint256 platformFee = (currentBalance * _pricing.splitBPS) / 10_000;
         uint256 artistFee = currentBalance - platformFee;
 
         // No need for gas limit to trusted address.
@@ -570,7 +576,7 @@ contract SingleEditionMintable is
         if (owner() == address(0x0)) {
             return (owner(), 0);
         }
-        return (owner(), (_salePrice * _royaltyBPS) / 10_000);
+        return (owner(), (_salePrice * _pricing.royaltyBPS) / 10_000);
     }
 
     /**
