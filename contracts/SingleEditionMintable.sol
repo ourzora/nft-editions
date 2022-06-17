@@ -36,19 +36,68 @@ contract SingleEditionMintable is
 {
     enum WhoCanMint{ ONLY_OWNER, VIPS, MEMBERS, ANYONE }
 
+    enum ExpandedNFTStates{ UNMINTED, MINTED, REDEEM_STARTED, SET_OFFER_TERMS, ACCEPTED_OFFER, PRODUCTION_COMPLETE, REDEEMED }
+
     using CountersUpgradeable for CountersUpgradeable.Counter;
     
     event PriceChanged(uint256 amount);
     event EditionSold(uint256 price, address owner);
     event WhoCanMintChanged(WhoCanMint minters);
 
+    // State change events
+    event RedeemStarted(uint256 tokenId, address owner);
+    event OfferTermsSet(uint256 tokenId);
+    event OfferAccepted(uint256 tokenId);
+    event OfferRejected(uint256 tokenId);
+    event ProductionComplete(uint256 tokenId);
+    event DeliveryAccepted(uint256 tokenId);
+
+    struct PerToken { 
+        // animation_url field in the metadata
+        string redeemedAnimationUrl;
+
+        // Hash for the associated animation
+        bytes32 redeemedAnimationHash;
+
+        // Image in the metadata
+        string redeemedImageUrl;
+
+        // Hash for the associated image
+        bytes32 redeemedImageHash;
+
+        // Condition report in the metadata
+        string conditionReportUrl;
+
+        // Hash for the condition report
+        bytes32 conditionReportHash;
+
+        // Hashmap of the Edition ID to the current 
+        ExpandedNFTStates editionState;
+        uint256 editionFee; 
+    }
+
+    struct Pricing { 
+        // Royalty amount in bps
+        uint256 royaltyBPS;
+
+        // Split amount to the platforms. the artist in bps
+        uint256 splitBPS;
+
+        // Price for VIP sales
+        uint256 vipSalePrice;
+
+        // Price for member sales
+        uint256 membersSalePrice;        
+    }
+
     // metadata
     string public description;
 
     // Artists wallet address
-    address _artist;
+    address private _artist;
 
-    // Media Urls
+    // Minted
+
     // animation_url field in the metadata
     string private _animationUrl;
     // Hash for the associated animation
@@ -58,23 +107,26 @@ contract SingleEditionMintable is
     // Hash for the associated image
     bytes32 private _imageHash;
 
+    // Per Token data
+    mapping(uint256 => PerToken) private _perTokenMetadata;
+
     // Total size of edition that can be minted
     uint256 public editionSize;
+
     // Current token id minted
     CountersUpgradeable.Counter private _atEditionId;
-    // Royalty amount in bps
-    uint256 private _royaltyBPS;
-    // Split amount to the platforms. the artist in bps
-    uint256 private _splitBPS;
 
     // Addresses allowed to mint edition
     mapping(address => bool) private _allowedMinters;
     // VIP Addresses allowed to mint edition
     mapping(address => bool) private _vipAllowedMinters;
-    // Who can currently mint
-    WhoCanMint _whoCanMint;
 
-    // Price for sale
+    // Who can currently mint
+    WhoCanMint private _whoCanMint;
+
+    Pricing private _pricing;
+
+    // Price for general sales
     uint256 public salePrice;
 
     // NFT rendering logic contract
@@ -129,8 +181,8 @@ contract SingleEditionMintable is
         
         _artist = artist;
         editionSize = _editionSize;
-        _royaltyBPS = royaltyBPS;
-        _splitBPS = splitBPS;
+        _pricing.royaltyBPS = royaltyBPS;
+        _pricing.splitBPS = splitBPS;
 
         // Set edition id start to be 1 not 0
         _atEditionId.increment();
@@ -147,16 +199,35 @@ contract SingleEditionMintable is
      */
 
     /**
-      @dev This allows the user to purchase a edition edition
+      @dev This allows the user to purchase an edition
            at the given price in the contract.
      */
     function purchase() external payable returns (uint256) {
-        require(salePrice > 0, "Not for sale");
-        require(msg.value == salePrice, "Wrong price");
+        uint256 currentPrice = _currentSalesPrice();
+
+        require(currentPrice > 0, "Not for sale");
+        require(msg.value == currentPrice, "Wrong price");
+
         address[] memory toMint = new address[](1);
         toMint[0] = msg.sender;
-        emit EditionSold(salePrice, msg.sender);
+        emit EditionSold(currentPrice, msg.sender);
         return _mintEditions(toMint);
+    }
+
+    /**
+      @dev returns the current ETH sales price
+           based on who can currently mint.
+     */
+    function _currentSalesPrice() internal view returns (uint256){
+        if (_whoCanMint == WhoCanMint.VIPS) {
+            return _pricing.vipSalePrice;
+        } else if (_whoCanMint == WhoCanMint.MEMBERS) {
+            return _pricing.membersSalePrice;
+        } else if (_whoCanMint == WhoCanMint.ANYONE) {
+            return salePrice;
+        } 
+            
+        return 0;       
     }
 
     /**
@@ -168,8 +239,44 @@ contract SingleEditionMintable is
      */
     function setSalePrice(uint256 _salePrice) external onlyOwner {
         salePrice = _salePrice;
+
+        _whoCanMint = WhoCanMint.ANYONE;
+
+        emit WhoCanMintChanged(_whoCanMint);
         emit PriceChanged(salePrice);
     }
+
+    /**
+      @param _salePrice if sale price is 0 sale is stopped, otherwise that amount 
+                       of ETH is needed to start the sale.
+      @dev This sets the VIP ETH sales price
+           Setting a sales price allows users to mint the edition until it sells out.
+           For more granular sales, use an external sales contract.
+     */
+    function setVIPSalePrice(uint256 _salePrice) external onlyOwner {
+        _pricing.vipSalePrice = _salePrice;
+
+        _whoCanMint = WhoCanMint.VIPS;
+
+        emit WhoCanMintChanged(_whoCanMint);
+        emit PriceChanged(salePrice);
+    }
+
+     /**
+      @param _salePrice if sale price is 0 sale is stopped, otherwise that amount 
+                       of ETH is needed to start the sale.
+      @dev This sets the members ETH sales price
+           Setting a sales price allows users to mint the edition until it sells out.
+           For more granular sales, use an external sales contract.
+     */
+    function setMembersSalePrice(uint256 _salePrice) external onlyOwner {
+        _pricing.membersSalePrice = _salePrice;
+
+        _whoCanMint = WhoCanMint.MEMBERS;
+
+        emit WhoCanMintChanged(_whoCanMint);
+        emit PriceChanged(salePrice);
+    }   
 
     /**
       @dev This withdraws ETH from the contract to the contract owner.
@@ -177,7 +284,7 @@ contract SingleEditionMintable is
     function withdraw() external onlyOwner {
         uint256 currentBalance = address(this).balance;
         
-        uint256 platformFee = (currentBalance * _royaltyBPS) / 10_000;
+        uint256 platformFee = (currentBalance * _pricing.splitBPS) / 10_000;
         uint256 artistFee = currentBalance - platformFee;
 
         // No need for gas limit to trusted address.
@@ -195,13 +302,13 @@ contract SingleEditionMintable is
         }
             
         if (_whoCanMint == WhoCanMint.MEMBERS) {
-            if (_allowedMinters[address(0x0)]) {
+            if (_allowedMinters[msg.sender]) {
                 return true;
             }          
         }
 
         if ((_whoCanMint == WhoCanMint.VIPS) || (_whoCanMint == WhoCanMint.MEMBERS)) {
-            if (_vipAllowedMinters[address(0x0)]) {
+            if (_vipAllowedMinters[msg.sender]) {
                 return true;
             }            
         }
@@ -319,8 +426,88 @@ contract SingleEditionMintable is
         _burn(tokenId);
     }
 
+    function redeem(uint256 tokenId) public {
+        require(_exists(tokenId), "No token");
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
+
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.MINTED), "You currently can not redeem");
+
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.REDEEM_STARTED;
+        emit RedeemStarted(tokenId, _msgSender());
+    }
+
+    function setOfferTerms(uint256 tokenId, uint256 fee) public onlyOwner {
+        require(_exists(tokenId), "No token");        
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.REDEEM_STARTED), "Wrong state");
+
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.SET_OFFER_TERMS;
+        _perTokenMetadata[tokenId].editionFee = fee;
+
+        emit OfferTermsSet(tokenId);
+    }
+
+    function rejectOfferTerms(uint256 tokenId) public {
+        require(_exists(tokenId), "No token");        
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
+
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.SET_OFFER_TERMS), "You currently can not redeem");
+
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.MINTED;
+
+        emit OfferRejected(tokenId);
+    }
+
+    function acceptOfferTerms(uint256 tokenId) external payable  {
+        require(_exists(tokenId), "No token");        
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.SET_OFFER_TERMS), "You currently can not redeem");
+        require(msg.value == _perTokenMetadata[tokenId].editionFee, "Wrong price");
+
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.ACCEPTED_OFFER;
+
+        emit OfferAccepted(tokenId);
+    }
+
+    function productionComplete(
+        uint256 tokenId,
+        string memory _description,
+        string memory animationUrl,
+        bytes32 animationHash,
+        string memory imageUrl,
+        bytes32 imageHash, 
+        string memory conditionReportUrl,
+        bytes32 conditionReportHash               
+    ) public onlyOwner {
+        require(_exists(tokenId), "No token");        
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.ACCEPTED_OFFER), "You currently can not redeem");
+
+        // Set the NFT to display as redeemed
+        description = _description;
+        _perTokenMetadata[tokenId].redeemedAnimationUrl = animationUrl;
+        _perTokenMetadata[tokenId].redeemedAnimationHash = animationHash;
+        _perTokenMetadata[tokenId].redeemedImageUrl = imageUrl;
+        _perTokenMetadata[tokenId].redeemedImageHash = imageHash;
+        _perTokenMetadata[tokenId].conditionReportUrl = conditionReportUrl;
+        _perTokenMetadata[tokenId].conditionReportHash = conditionReportHash;
+
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.PRODUCTION_COMPLETE;
+
+        emit ProductionComplete(tokenId);
+    }
+
+    function acceptDelivery(uint256 tokenId) public {
+        require(_exists(tokenId), "No token");        
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
+
+        require((_perTokenMetadata[tokenId].editionState == ExpandedNFTStates.PRODUCTION_COMPLETE), "You currently can not redeem");
+
+        _perTokenMetadata[tokenId].editionState = ExpandedNFTStates.REDEEMED;
+
+        emit OfferRejected(tokenId);
+    }
+
     /**
-      @dev Private function to mint als without any access checks.
+      @dev Private function to mint without any access checks.
            Called by the public edition minting functions.
      */
     function _mintEditions(address[] memory recipients)
@@ -335,8 +522,12 @@ contract SingleEditionMintable is
                 recipients[_atEditionId.current() - startAt],
                 _atEditionId.current()
             );
+
+            _perTokenMetadata[_atEditionId.current()].editionState = ExpandedNFTStates.MINTED;
+
             _atEditionId.increment();
         }
+        
         return _atEditionId.current();
     }
 
@@ -358,6 +549,21 @@ contract SingleEditionMintable is
     }
 
     /**
+      @dev Get URIs for the condition report
+      @return _imageUrl, _imageHash
+     */
+    function getConditionReport(uint256 tokenId)
+        public
+        view
+        returns (
+            string memory,
+            bytes32
+        )
+    {
+        return (_perTokenMetadata[tokenId].conditionReportUrl, _perTokenMetadata[tokenId].conditionReportHash);
+    }
+
+    /**
         @dev Get royalty information for token
         @param _salePrice Sale price for the token
      */
@@ -370,7 +576,7 @@ contract SingleEditionMintable is
         if (owner() == address(0x0)) {
             return (owner(), 0);
         }
-        return (owner(), (_salePrice * _royaltyBPS) / 10_000);
+        return (owner(), (_salePrice * _pricing.royaltyBPS) / 10_000);
     }
 
     /**
