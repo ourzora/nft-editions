@@ -58,8 +58,6 @@ contract SingleEditionMintable is
     // Artists wallet address
     address _artist;
 
-    // Media Urls
-
     // Minted
 
     // animation_url field in the metadata
@@ -414,6 +412,7 @@ contract SingleEditionMintable is
     }
 
     function redeem(uint256 tokenId) public {
+        require(_exists(tokenId), "No token");
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
 
         require((_editionState[tokenId] == ExpandedNFTStates.MINTED), "You currently can not redeem");
@@ -423,6 +422,7 @@ contract SingleEditionMintable is
     }
 
     function setOfferTerms(uint256 tokenId, uint256 fee) public onlyOwner {
+        require(_exists(tokenId), "No token");        
         require((_editionState[tokenId] == ExpandedNFTStates.REDEEM_STARTED), "Wrong state");
 
         _editionState[tokenId] = ExpandedNFTStates.SET_OFFER_TERMS;
@@ -432,6 +432,7 @@ contract SingleEditionMintable is
     }
 
     function rejectOfferTerms(uint256 tokenId) public {
+        require(_exists(tokenId), "No token");        
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
 
         require((_editionState[tokenId] == ExpandedNFTStates.SET_OFFER_TERMS), "You currently can not redeem");
@@ -442,6 +443,7 @@ contract SingleEditionMintable is
     }
 
     function acceptOfferTerms(uint256 tokenId) external payable  {
+        require(_exists(tokenId), "No token");        
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
         require((_editionState[tokenId] == ExpandedNFTStates.SET_OFFER_TERMS), "You currently can not redeem");
         require(msg.value == _editionFee[tokenId], "Wrong price");
@@ -451,8 +453,27 @@ contract SingleEditionMintable is
         emit OfferAccepted(tokenId);
     }
 
-    function productionComplete(uint256 tokenId) public onlyOwner {
+    function productionComplete(
+        uint256 tokenId,
+        string memory _description,
+        string memory animationUrl,
+        bytes32 animationHash,
+        string memory imageUrl,
+        bytes32 imageHash, 
+        string memory conditionReportUrl,
+        bytes32 conditionReportHash               
+    ) public onlyOwner {
+        require(_exists(tokenId), "No token");        
         require((_editionState[tokenId] == ExpandedNFTStates.ACCEPTED_OFFER), "You currently can not redeem");
+
+        // Set the NFT to display as redeemed
+        description = _description;
+        _redeemedAnimationUrl[tokenId] = animationUrl;
+        _redeemedAnimationHash[tokenId] = animationHash;
+        _redeemedImageUrl[tokenId] = imageUrl;
+        _redeemedImageHash[tokenId] = imageHash;
+        _conditionReportUrl[tokenId] = conditionReportUrl;
+        _conditionReportHash[tokenId] = conditionReportHash;
 
         _editionState[tokenId] = ExpandedNFTStates.PRODUCTION_COMPLETE;
 
@@ -460,6 +481,7 @@ contract SingleEditionMintable is
     }
 
     function acceptDelivery(uint256 tokenId) public {
+        require(_exists(tokenId), "No token");        
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
 
         require((_editionState[tokenId] == ExpandedNFTStates.PRODUCTION_COMPLETE), "You currently can not redeem");
@@ -509,6 +531,21 @@ contract SingleEditionMintable is
         )
     {
         return (_imageUrl, _imageHash, _animationUrl, _animationHash);
+    }
+
+    /**
+      @dev Get URIs for the condition report
+      @return _imageUrl, _imageHash
+     */
+    function getConditionReport(uint256 tokenId)
+        public
+        view
+        returns (
+            string memory,
+            bytes32
+        )
+    {
+        return (_conditionReportUrl[tokenId], _conditionReportHash[tokenId]);
     }
 
     /**
