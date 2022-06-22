@@ -58,8 +58,8 @@ Now that you have a edition, there are multiple options for lazy-minting and sal
 
 (Replace network with desired network)
 
-`hardhat deploy --network rinkeby`
+`yarn hardhat deploy --network rinkeby`
 
 ### Verifying:
 
-`hardhat sourcify --network rinkeby && hardhat etherscan-verify --network rinkeby`
+`yarn hardhat sourcify --network rinkeby && hardhat etherscan-verify --network rinkeby`
