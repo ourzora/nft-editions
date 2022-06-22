@@ -54,10 +54,6 @@ Now that you have a edition, there are multiple options for lazy-minting and sal
 
 `yarn test`
 
-### Coverage
-
-`yarn coverage`
-
 ### Deploying:
 
 (Replace network with desired network)
