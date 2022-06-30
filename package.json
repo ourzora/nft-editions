@@ -23,7 +23,8 @@
     "coverage": "npm run typechain && hardhat coverage",
     "build": "yarn run prepack",
     "prepack": "hardhat compile",
-    "lint": "npx solhint 'contracts/**/*.sol' --fix && npx prettier '**/*.{json,md}' --write"
+    "lint": "npx solhint 'contracts/**/*.sol' --fix && npx prettier '**/*.{json,md}' --write",
+    "verify": "hardhat sourcify --network rinkeby && hardhat etherscan-verify --network rinkeby"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
