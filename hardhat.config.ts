@@ -33,34 +33,7 @@ const config: HardhatUserConfig = {
     currency: "USD",
     gasPrice: 60,
   },
-  networks: {
-    hardhat: {
-      forking: {
-        url: mainnetUrl,
-      },
-    },
-    rinkeby: {
-      url: rinkebyUrl,
-      accounts:
-        process.env.TREASURY_PRIVATE_KEY !== undefined
-          ? [process.env.TREASURY_PRIVATE_KEY]
-          : [],
-    },
-    goerli: {
-      url: goerliUrl,
-      accounts:
-        process.env.TREASURY_PRIVATE_KEY !== undefined
-          ? [process.env.TREASURY_PRIVATE_KEY]
-          : [],
-    },
-    mainnet: {
-      url: mainnetUrl,
-      accounts:
-        process.env.TREASURY_PRIVATE_KEY !== undefined
-          ? [process.env.TREASURY_PRIVATE_KEY]
-          : [],
-    },
-  },
+  networks,
   namedAccounts: {
     deployer: 0,
     purchaser: 0,
