@@ -150,6 +150,7 @@ contract SingleEditionMintable is
       @param animationHash The associated hash of the animation in sha-256 bytes32 format. If animation is omitted the hash can be zero.
       @param _editionSize Number of editions that can be minted in total. If 0, unlimited editions can be minted.
       @param royaltyBPS BPS of the royalty set on the contract. Can be 0 for no royalty.
+      @param splitBPS BPS of the royalty set on the contract. Can be 0 for no royalty.        
       @dev Function to create a new edition. Can only be called by the allowed creator
            Sets the only allowed minter to the address that creates/owns the edition.
            This can be re-assigned or updated later

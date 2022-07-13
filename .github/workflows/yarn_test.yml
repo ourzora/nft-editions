@@ -2,6 +2,9 @@ name: yarn test
 on: push
 jobs:
   run-test:
+    env:
+      INFURA_API_KEY: ${{ secrets.INFURA_API_KEY }}
+      MAINNET_URL: ${{ secrets.MAINNET_URL }}  
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2

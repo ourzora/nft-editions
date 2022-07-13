@@ -4,9 +4,7 @@ import "hardhat-gas-reporter";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-etherscan";
 import { HardhatUserConfig } from "hardhat/config";
-import networks from "./networks";
-import dotenv from "dotenv";
-import "solidity-coverage";
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -25,15 +23,42 @@ const mainnetUrl = mainnetBaseUrl.concat(apiKey);
  * @type import('hardhat/config').HardhatUserConfig
  */
 const config: HardhatUserConfig = {
-  defaultNetwork: "hardhat",
+  defaultNetwork: 'hardhat',
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
   },
   gasReporter: {
-    currency: "USD",
-    gasPrice: 60,
+    currency: 'USD',
+    gasPrice: 60, 
   },
-  networks,
+  networks: {
+    hardhat: {
+      forking: {
+        url: mainnetUrl,
+      },
+    },
+    rinkeby: {
+      url: rinkebyUrl,
+      accounts:
+        process.env.TREASURY_PRIVATE_KEY !== undefined
+          ? [process.env.TREASURY_PRIVATE_KEY]
+          : [],
+    },
+    goerli: {
+      url: goerliUrl,
+      accounts:
+        process.env.TREASURY_PRIVATE_KEY !== undefined
+          ? [process.env.TREASURY_PRIVATE_KEY]
+          : [],
+    },
+    mainnet: {
+      url: mainnetUrl,
+      accounts:
+        process.env.TREASURY_PRIVATE_KEY !== undefined
+          ? [process.env.TREASURY_PRIVATE_KEY]
+          : [],
+    },
+  },
   namedAccounts: {
     deployer: 0,
     purchaser: 0,
