@@ -279,6 +279,26 @@ contract SingleEditionMintable is
         emit PriceChanged(salePrice);
     }   
 
+
+     /**
+      @param vipSalePrice if sale price is 0 sale is stopped, otherwise that amount 
+                       of ETH is needed to start the sale.
+      @param membersSalePrice if sale price is 0 sale is stopped, otherwise that amount 
+                       of ETH is needed to start the sale.
+      @param generalSalePrice if sale price is 0 sale is stopped, otherwise that amount 
+                       of ETH is needed to start the sale.                                              
+      @dev This sets the members ETH sales price
+           Setting a sales price allows users to mint the edition until it sells out.
+           For more granular sales, use an external sales contract.
+     */
+    function setSalePrices(uint256 vipSalePrice, uint256 membersSalePrice, uint256 generalSalePrice) external onlyOwner {
+        _pricing.vipSalePrice = vipSalePrice;
+        _pricing.membersSalePrice = membersSalePrice;
+        salePrice = generalSalePrice;        
+
+        emit PriceChanged(salePrice);
+    }  
+
     /**
       @dev This withdraws ETH from the contract to the contract owner.
      */
