@@ -68,6 +68,6 @@ Now that you have a edition, there are multiple options for lazy-minting and sal
 
 ### Rinkeby
 
-- SharedNFTLogic [0x707d795e898c32ebff02d717d8798fc1126ba001](https://rinkeby.etherscan.io/address/0x707d795e898c32ebff02d717d8798fc1126ba001)
-- SingleEditionMintable [0x17737c9fcab43d2577a4e7f43302e05adb48a44c](https://rinkeby.etherscan.io/address/0x17737c9fcab43d2577a4e7f43302e05adb48a44c)
-- SingleEditionMintableCreator [0xe544dbb441b9e01e00aa7d913f141eecd3445743](https://rinkeby.etherscan.io/address/0xe544dbb441b9e01e00aa7d913f141eecd3445743)
+- SharedNFTLogic [0x86b7d020C96676D3134931a69bC7df0675f45B1c](https://rinkeby.etherscan.io/address/0x86b7d020C96676D3134931a69bC7df0675f45B1c)
+- SingleEditionMintable [0x292b15C235D1678211326993bB865508dE254ab1](https://rinkeby.etherscan.io/address/0x292b15C235D1678211326993bB865508dE254ab1)
+- SingleEditionMintableCreator [0x9a0E641037D3aA279245bEc193442797A7EE1de0](https://rinkeby.etherscan.io/address/0x9a0E641037D3aA279245bEc193442797A7EE1de0)
