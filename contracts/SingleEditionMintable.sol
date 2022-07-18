@@ -414,7 +414,7 @@ contract SingleEditionMintable is
              anyone will be allowed to mint.
            This setup is similar to setApprovalForAll in the ERC721 spec.
      */
-    function setApprovedVIPMinter(uint256 count, address[] calldata minter, bool[] calldata allowed) public onlyOwner {
+    function setApprovedVIPMinters(uint256 count, address[] calldata minter, bool[] calldata allowed) public onlyOwner {
         for (uint256 i=0; i < count; i++) {
             _vipAllowedMinters[minter[i]] = allowed[i];
         }
