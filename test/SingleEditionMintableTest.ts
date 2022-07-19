@@ -6,10 +6,10 @@ import parseDataURI from "data-urls";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   DropCreator,
-  SingleEditionMintable,
+  ExpandedNFT,
 } from "../typechain";
 
-describe("SingleEditionMintable", () => {
+describe("ExpandedNFT", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
   
@@ -21,10 +21,10 @@ describe("SingleEditionMintable", () => {
   beforeEach(async () => {
     const { DropCreator } = await deployments.fixture([
       "DropCreator",
-      "SingleEditionMintable",
+      "ExpandedNFT",
     ]);
     const dynamicMintableAddress = (
-      await deployments.get("SingleEditionMintable")
+      await deployments.get("ExpandedNFT")
     ).address;
     dynamicSketch = (await ethers.getContractAt(
       "DropCreator",
@@ -58,9 +58,9 @@ describe("SingleEditionMintable", () => {
 
     const editionResult = await dynamicSketch.getEditionAtId(0);
     const minterContract = (await ethers.getContractAt(
-      "SingleEditionMintable",
+      "ExpandedNFT",
       editionResult
-    )) as SingleEditionMintable;
+    )) as ExpandedNFT;
     expect(await minterContract.name()).to.be.equal("Testing Token");
     expect(await minterContract.symbol()).to.be.equal("TEST");
     const editionUris = await minterContract.getURIs();
@@ -80,7 +80,7 @@ describe("SingleEditionMintable", () => {
   });
   describe("with a edition", () => {
     let signer1: SignerWithAddress;
-    let minterContract: SingleEditionMintable;
+    let minterContract: ExpandedNFT;
     beforeEach(async () => {
       signer1 = (await ethers.getSigners())[1];
       await dynamicSketch.createEdition(
@@ -100,9 +100,9 @@ describe("SingleEditionMintable", () => {
 
       const editionResult = await dynamicSketch.getEditionAtId(0);
       minterContract = (await ethers.getContractAt(
-        "SingleEditionMintable",
+        "ExpandedNFT",
         editionResult
-      )) as SingleEditionMintable;
+      )) as ExpandedNFT;
     });
     it("creates a new edition", async () => {
       expect(await signer1.getBalance()).to.eq(
@@ -163,9 +163,9 @@ describe("SingleEditionMintable", () => {
 
       const editionResult = await dynamicSketch.getEditionAtId(1);
       minterContract = (await ethers.getContractAt(
-        "SingleEditionMintable",
+        "ExpandedNFT",
         editionResult
-      )) as SingleEditionMintable;
+      )) as ExpandedNFT;
 
       expect(await minterContract.totalSupply()).to.be.equal(0);
 
@@ -320,9 +320,9 @@ describe("SingleEditionMintable", () => {
 
         const editionResult = await dynamicSketch.getEditionAtId(1);
         const minterContractNew = (await ethers.getContractAt(
-          "SingleEditionMintable",
+          "ExpandedNFT",
           editionResult
-        )) as SingleEditionMintable;
+        )) as ExpandedNFT;
 
         await minterContractNew.mintEdition(signerAddress);
         expect(
@@ -354,9 +354,9 @@ describe("SingleEditionMintable", () => {
 
       const editionResult = await dynamicSketch.getEditionAtId(1);
       minterContract = (await ethers.getContractAt(
-        "SingleEditionMintable",
+        "ExpandedNFT",
         editionResult
-      )) as SingleEditionMintable;
+      )) as ExpandedNFT;
 
       const [s1, s2, s3] = await ethers.getSigners();
       const [s1a, s2a, s3a] = [

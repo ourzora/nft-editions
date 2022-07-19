@@ -2,7 +2,7 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const mintableAddress = (await deployments.get("SingleEditionMintable"))
+  const mintableAddress = (await deployments.get("ExpandedNFT"))
     .address;
 
   await deploy("DropCreator", {
@@ -12,4 +12,4 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
   });
 };
 module.exports.tags = ["DropCreator"];
-module.exports.dependencies = ["SingleEditionMintable"];
+module.exports.dependencies = ["ExpandedNFT"];

@@ -6,7 +6,7 @@ import parseDataURI from "data-urls";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
   DropCreator,
-  SingleEditionMintable,
+  ExpandedNFT,
 } from "../typechain";
 
 describe("AllowedMinters", () => {
@@ -17,10 +17,10 @@ describe("AllowedMinters", () => {
   beforeEach(async () => {
     const { DropCreator } = await deployments.fixture([
       "DropCreator",
-      "SingleEditionMintable",
+      "ExpandedNFT",
     ]);
     const dynamicMintableAddress = (
-      await deployments.get("SingleEditionMintable")
+      await deployments.get("ExpandedNFT")
     ).address;
     dynamicSketch = (await ethers.getContractAt(
       "DropCreator",
@@ -53,9 +53,9 @@ describe("AllowedMinters", () => {
 
     const editionResult = await dynamicSketch.getEditionAtId(0);
     const minterContract = (await ethers.getContractAt(
-      "SingleEditionMintable",
+      "ExpandedNFT",
       editionResult
-    )) as SingleEditionMintable;
+    )) as ExpandedNFT;
     expect(await minterContract.name()).to.be.equal("Testing Token");
     expect(await minterContract.symbol()).to.be.equal("TEST");
     const editionUris = await minterContract.getURIs();

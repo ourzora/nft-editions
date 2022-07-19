@@ -23,11 +23,11 @@ contract DropCreator {
     /// Counter for current contract id upgraded
     CountersUpgradeable.Counter private _atContract;
 
-    /// Address for implementation of SingleEditionMintable to clone
+    /// Address for implementation of ExpandedNFT to clone
     address public implementation;
 
     /// Initializes factory with address of implementation logic
-    /// @param _implementation SingleEditionMintable logic implementation contract to clone
+    /// @param _implementation ExpandedNFT logic implementation contract to clone
     constructor(address _implementation) {
         implementation = _implementation;
     }
@@ -62,7 +62,7 @@ contract DropCreator {
             bytes32(abi.encodePacked(_atContract.current()))
         );
 
-        SingleEditionMintable(newContract).initialize(
+        ExpandedNFT(newContract).initialize(
             msg.sender,
             _artist,
             _name,
@@ -87,14 +87,14 @@ contract DropCreator {
 
     /// Get edition given the created ID
     /// @param editionId id of edition to get contract for
-    /// @return SingleEditionMintable Edition NFT contract
+    /// @return ExpandedNFT Edition NFT contract
     function getEditionAtId(uint256 editionId)
         external
         view
-        returns (SingleEditionMintable)
+        returns (ExpandedNFT)
     {
         return
-            SingleEditionMintable(
+            ExpandedNFT(
                 ClonesUpgradeable.predictDeterministicAddress(
                     implementation,
                     bytes32(abi.encodePacked(editionId)),

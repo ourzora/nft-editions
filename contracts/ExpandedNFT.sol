@@ -28,7 +28,7 @@ import {IEditionSingleMintable} from "./IEditionSingleMintable.sol";
     @author iain nash
     Repository: https://github.com/ourzora/nft-editions
 */
-contract SingleEditionMintable is
+contract ExpandedNFT is
     ERC721Upgradeable,
     IEditionSingleMintable,
     IERC2981Upgradeable,
