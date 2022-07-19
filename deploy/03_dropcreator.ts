@@ -5,11 +5,11 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
   const mintableAddress = (await deployments.get("SingleEditionMintable"))
     .address;
 
-  await deploy("SingleEditionMintableCreator", {
+  await deploy("DropCreator", {
     from: deployer,
     args: [mintableAddress],
     log: true,
   });
 };
-module.exports.tags = ["SingleEditionMintableCreator"];
+module.exports.tags = ["DropCreator"];
 module.exports.dependencies = ["SingleEditionMintable"];

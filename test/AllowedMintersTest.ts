@@ -5,27 +5,27 @@ import parseDataURI from "data-urls";
 
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  SingleEditionMintableCreator,
+  DropCreator,
   SingleEditionMintable,
 } from "../typechain";
 
 describe("AllowedMinters", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
-  let dynamicSketch: SingleEditionMintableCreator;
+  let dynamicSketch: DropCreator;
 
   beforeEach(async () => {
-    const { SingleEditionMintableCreator } = await deployments.fixture([
-      "SingleEditionMintableCreator",
+    const { DropCreator } = await deployments.fixture([
+      "DropCreator",
       "SingleEditionMintable",
     ]);
     const dynamicMintableAddress = (
       await deployments.get("SingleEditionMintable")
     ).address;
     dynamicSketch = (await ethers.getContractAt(
-      "SingleEditionMintableCreator",
-      SingleEditionMintableCreator.address
-    )) as SingleEditionMintableCreator;
+      "DropCreator",
+      DropCreator.address
+    )) as DropCreator;
 
     signer = (await ethers.getSigners())[0];
     signerAddress = await signer.getAddress();

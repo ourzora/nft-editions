@@ -17,7 +17,7 @@ import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/Cou
 
 import "./ExpandedNFT.sol";
 
-contract SingleEditionMintableCreator {
+contract DropCreator {
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     /// Counter for current contract id upgraded
