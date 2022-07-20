@@ -16,26 +16,7 @@ Based on the [Zora NFT Editions](https://github.com/ourzora/nft-editions) contra
 ## How do I create and use Expanded NFTs?
 
 - [How do I create a new drop?](./docs/create-a-drop.md)
-
-## Developing with these contracts
-
-### Install
-
-`yarn install`
-
-### Test
-
-`yarn test`
-
-### Deploying:
-
-(Replace network with desired network)
-
-`yarn hardhat deploy --network rinkeby`
-
-### Verifying:
-
-`yarn hardhat sourcify --network rinkeby && hardhat etherscan-verify --network rinkeby`
+- [How do develop locally?](./docs/develop.md)
 
 ## Deployed
 
