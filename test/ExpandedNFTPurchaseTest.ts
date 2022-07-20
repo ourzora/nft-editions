@@ -39,7 +39,7 @@ describe("ExpandedNFT", () => {
   });
 
   it("purchases a edition", async () => {
-    await dynamicSketch.createEdition(
+    await dynamicSketch.createDrop(
       artistAddress,
       "Testing Token",
       "TEST",
@@ -54,10 +54,10 @@ describe("ExpandedNFT", () => {
       500        
     );
 
-    const editionResult = await dynamicSketch.getEditionAtId(0);
+    const dropResult = await dynamicSketch.getDropAtId(0);
     const minterContract = (await ethers.getContractAt(
       "ExpandedNFT",
-      editionResult
+      dropResult
     )) as ExpandedNFT;
     expect(await minterContract.name()).to.be.equal("Testing Token");
     expect(await minterContract.symbol()).to.be.equal("TEST");

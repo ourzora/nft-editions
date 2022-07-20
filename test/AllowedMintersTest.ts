@@ -31,11 +31,11 @@ describe("AllowedMinters", () => {
     signerAddress = await signer.getAddress();
   });
 
-  it("makes a new edition", async () => {
+  it("makes a new drop", async () => {
     const artist = (await ethers.getSigners())[1];
     const artistAddress = await signer.getAddress();
 
-    await dynamicSketch.createEdition(
+    await dynamicSketch.createDrop(
       artistAddress,
       "Testing Token",
       "TEST",
@@ -51,22 +51,22 @@ describe("AllowedMinters", () => {
       500
     );
 
-    const editionResult = await dynamicSketch.getEditionAtId(0);
+    const dropResult = await dynamicSketch.getDropAtId(0);
     const minterContract = (await ethers.getContractAt(
       "ExpandedNFT",
-      editionResult
+      dropResult
     )) as ExpandedNFT;
     expect(await minterContract.name()).to.be.equal("Testing Token");
     expect(await minterContract.symbol()).to.be.equal("TEST");
-    const editionUris = await minterContract.getURIs();
-    expect(editionUris[0]).to.be.equal("");
-    expect(editionUris[1]).to.be.equal(
+    const dropUris = await minterContract.getURIs();
+    expect(dropUris[0]).to.be.equal("");
+    expect(dropUris[1]).to.be.equal(
       "0x0000000000000000000000000000000000000000000000000000000000000000"
     );
-    expect(editionUris[2]).to.be.equal(
+    expect(dropUris[2]).to.be.equal(
       "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy"
     );
-    expect(editionUris[3]).to.be.equal(
+    expect(dropUris[3]).to.be.equal(
       "0x0000000000000000000000000000000000000000000000000000000000000000"
     );
     expect(await minterContract.editionSize()).to.be.equal(10);

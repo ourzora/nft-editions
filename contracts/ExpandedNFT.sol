@@ -24,9 +24,9 @@ import {IExpandedNFT} from "./IExpandedNFT.sol";
 /**
     This is a smart contract for handling dynamic contract minting.
 
-    @dev This allows creators to mint a unique serial edition of the same media within a custom contract
-    @author iain nash
-    Repository: https://github.com/ourzora/nft-editions
+    @dev This allows creators to mint a unique serial drop of an expanded NFT within a custom contract
+    @author Zien
+    Repository: https://github.com/joinzien/expanded-nft
 */
 contract ExpandedNFT is
     ERC721Upgradeable,

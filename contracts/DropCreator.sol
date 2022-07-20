@@ -32,19 +32,19 @@ contract DropCreator {
         implementation = _implementation;
     }
 
-    /// Creates a new edition contract as a factory with a deterministic address
+    /// Creates a new drop contract as a factory with a deterministic address
     /// Important: None of these fields (except the Url fields with the same hash) can be changed after calling
-    /// @param _artist User that created the edition
-    /// @param _name Name of the edition contract
-    /// @param _symbol Symbol of the edition contract
-    /// @param _description Metadata: Description of the edition entry
-    /// @param _animationUrl Metadata: Animation url (optional) of the edition entry
+    /// @param _artist User that created the drop
+    /// @param _name Name of the drop contract
+    /// @param _symbol Symbol of the drop contract
+    /// @param _description Metadata: Description of the drop entry
+    /// @param _animationUrl Metadata: Animation url (optional) of the drop entry
     /// @param _animationHash Metadata: SHA-256 Hash of the animation (if no animation url, can be 0x0)
-    /// @param _imageUrl Metadata: Image url (semi-required) of the edition entry
-    /// @param _imageHash Metadata: SHA-256 hash of the Image of the edition entry (if not image, can be 0x0)
-    /// @param _editionSize Total size of the edition (number of possible editions)
+    /// @param _imageUrl Metadata: Image url (semi-required) of the drop entry
+    /// @param _imageHash Metadata: SHA-256 hash of the Image of the drop entry (if not image, can be 0x0)
+    /// @param _dropSize Total size of the drop (number of possible editions)
     /// @param _royaltyBPS BPS amount of royalty
-    function createEdition(
+    function createDrop(
         address _artist,
         string memory _name,
         string memory _symbol,
@@ -53,7 +53,7 @@ contract DropCreator {
         bytes32 _animationHash,
         string memory _imageUrl,
         bytes32 _imageHash,
-        uint256 _editionSize,
+        uint256 _dropSize,
         uint256 _royaltyBPS,
         uint256 _splitBPS
     ) external returns (uint256) {
@@ -72,23 +72,23 @@ contract DropCreator {
             _animationHash,
             _imageUrl,
             _imageHash,
-            _editionSize,
+            _dropSize,
             _royaltyBPS,
             _splitBPS
         );
 
         uint256 newId = _atContract.current();        
-        emit CreatedEdition(newId, msg.sender, _editionSize, newContract);
+        emit CreatedDrop(newId, msg.sender, _dropSize, newContract);
         // Returns the ID of the recently created minting contract
         // Also increments for the next contract creation call
         _atContract.increment();
         return newId;
     }
 
-    /// Get edition given the created ID
-    /// @param editionId id of edition to get contract for
-    /// @return ExpandedNFT Edition NFT contract
-    function getEditionAtId(uint256 editionId)
+    /// Get drop given the created ID
+    /// @param dropId id of drop to get contract for
+    /// @return ExpandedNFT Drop NFT contract
+    function getDropAtId(uint256 dropId)
         external
         view
         returns (ExpandedNFT)
@@ -97,18 +97,18 @@ contract DropCreator {
             ExpandedNFT(
                 ClonesUpgradeable.predictDeterministicAddress(
                     implementation,
-                    bytes32(abi.encodePacked(editionId)),
+                    bytes32(abi.encodePacked(dropId)),
                     address(this)
                 )
             );
     }
 
-    /// Emitted when a edition is created reserving the corresponding token IDs.
-    /// @param editionId ID of newly created edition
-    event CreatedEdition(
-        uint256 indexed editionId,
+    /// Emitted when a drop is created reserving the corresponding token IDs.
+    /// @param dropId ID of newly created drop
+    event CreatedDrop(
+        uint256 indexed dropId,
         address indexed creator,
-        uint256 editionSize,
-        address editionContractAddress
+        uint256 dropSize,
+        address dropContractAddress
     );
 }
