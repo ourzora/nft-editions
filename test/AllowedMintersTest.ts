@@ -69,7 +69,7 @@ describe("AllowedMinters", () => {
     expect(dropUris[3]).to.be.equal(
       "0x0000000000000000000000000000000000000000000000000000000000000000"
     );
-    expect(await minterContract.editionSize()).to.be.equal(10);
+    expect(await minterContract.dropSize()).to.be.equal(10);
     // TODO(iain): check bps
     expect(await minterContract.owner()).to.be.equal(signerAddress);
   });
