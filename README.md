@@ -16,7 +16,7 @@ Based on the [Zora NFT Editions](https://github.com/ourzora/nft-editions) contra
 ## How do I create and use Expanded NFTs?
 
 - [How do I create a new drop?](./docs/create-a-drop.md)
-- [How do develop locally?](./docs/develop.md)
+- [How to develop locally?](./docs/develop.md)
 
 ## Deployed
 
