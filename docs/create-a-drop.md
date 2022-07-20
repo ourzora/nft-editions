@@ -1,7 +1,5 @@
 # How do I create a new drop?
 
-## How do I create a new contract?
-
 1. Find/Deploy the `DropCreator` contract
 2. Call `createDrop` in `DropCreator` with the given arguments to create a new drop contract:
 
