@@ -19,18 +19,18 @@ import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/Cou
 import {AddressUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 
 import {SharedNFTLogic} from "./SharedNFTLogic.sol";
-import {IEditionSingleMintable} from "./IEditionSingleMintable.sol";
+import {IExpandedNFT} from "./IExpandedNFT.sol";
 
 /**
     This is a smart contract for handling dynamic contract minting.
 
-    @dev This allows creators to mint a unique serial edition of the same media within a custom contract
-    @author iain nash
-    Repository: https://github.com/ourzora/nft-editions
+    @dev This allows creators to mint a unique serial drop of an expanded NFT within a custom contract
+    @author Zien
+    Repository: https://github.com/joinzien/expanded-nft
 */
-contract SingleEditionMintable is
+contract ExpandedNFT is
     ERC721Upgradeable,
-    IEditionSingleMintable,
+    IExpandedNFT,
     IERC2981Upgradeable,
     OwnableUpgradeable
 {
@@ -110,8 +110,8 @@ contract SingleEditionMintable is
     // Per Token data
     mapping(uint256 => PerToken) private _perTokenMetadata;
 
-    // Total size of edition that can be minted
-    uint256 public editionSize;
+    // Total size of the drop that can be minted
+    uint256 public dropSize;
 
     // Current token id minted
     CountersUpgradeable.Counter private _atEditionId;
@@ -139,20 +139,20 @@ contract SingleEditionMintable is
     }
 
     /**
-      @param _owner User that owns and can mint the edition, gets royalty and sales payouts and can update the base url if needed.
-      @param artist User that created the edition
-      @param _name Name of edition, used in the title as "$NAME NUMBER/TOTAL"
+      @param _owner wallet addres for the user that owns and can mint the drop, gets royalty and sales payouts and can update the base url if needed.
+      @param artist wallet address for thr User that created the drop
+      @param _name Name of drop, used in the title as "$NAME NUMBER/TOTAL"
       @param _symbol Symbol of the new token contract
-      @param _description Description of edition, used in the description field of the NFT
-      @param imageUrl Image URL of the edition. Strongly encouraged to be used, if necessary, only animation URL can be used. One of animation and image url need to exist in a edition to render the NFT.
+      @param _description Description of drop, used in the description field of the NFT
+      @param imageUrl Image URL of the drop. Strongly encouraged to be used, if necessary, only animation URL can be used. One of animation and image url need to exist in a drop to render the NFT.
       @param imageHash SHA256 of the given image in bytes32 format (0xHASH). If no image is included, the hash can be zero.
-      @param animationUrl Animation URL of the edition. Not required, but if omitted image URL needs to be included. This follows the opensea spec for NFTs
+      @param animationUrl Animation URL of the drop. Not required, but if omitted image URL needs to be included. This follows the opensea spec for NFTs
       @param animationHash The associated hash of the animation in sha-256 bytes32 format. If animation is omitted the hash can be zero.
-      @param _editionSize Number of editions that can be minted in total. If 0, unlimited editions can be minted.
+      @param _dropSize Number of editions that can be minted in total. If 0, unlimited editions can be minted.
       @param royaltyBPS BPS of the royalty set on the contract. Can be 0 for no royalty.
       @param splitBPS BPS of the royalty set on the contract. Can be 0 for no royalty.        
-      @dev Function to create a new edition. Can only be called by the allowed creator
-           Sets the only allowed minter to the address that creates/owns the edition.
+      @dev Function to create a new drop. Can only be called by the allowed creator
+           Sets the only allowed minter to the address that creates/owns the drop.
            This can be re-assigned or updated later
      */
     function initialize(
@@ -165,7 +165,7 @@ contract SingleEditionMintable is
         bytes32 animationHash,
         string memory imageUrl,
         bytes32 imageHash,
-        uint256 _editionSize,
+        uint256 _dropSize,
         uint256 royaltyBPS,
         uint256 splitBPS
     ) public initializer {
@@ -181,7 +181,7 @@ contract SingleEditionMintable is
         _imageHash = imageHash;
         
         _artist = artist;
-        editionSize = _editionSize;
+        dropSize = _dropSize;
         _pricing.royaltyBPS = royaltyBPS;
         _pricing.splitBPS = splitBPS;
 
@@ -190,13 +190,13 @@ contract SingleEditionMintable is
     }
 
 
-    /// @dev returns the number of minted tokens within the edition
+    /// @dev returns the number of minted tokens within the drop
     function totalSupply() public view returns (uint256) {
         return _atEditionId.current() - 1;
     }
     /**
         Simple eth-based sales function
-        More complex sales functions can be implemented through ISingleEditionMintable interface
+        More complex sales functions can be implemented through IExpandedNFT interface
      */
 
     /**
@@ -235,7 +235,7 @@ contract SingleEditionMintable is
       @param _salePrice if sale price is 0 sale is stopped, otherwise that amount 
                        of ETH is needed to start the sale.
       @dev This sets a simple ETH sales price
-           Setting a sales price allows users to mint the edition until it sells out.
+           Setting a sales price allows users to mint the drop until it sells out.
            For more granular sales, use an external sales contract.
      */
     function setSalePrice(uint256 _salePrice) external onlyOwner {
@@ -251,7 +251,7 @@ contract SingleEditionMintable is
       @param _salePrice if sale price is 0 sale is stopped, otherwise that amount 
                        of ETH is needed to start the sale.
       @dev This sets the VIP ETH sales price
-           Setting a sales price allows users to mint the edition until it sells out.
+           Setting a sales price allows users to mint the drop until it sells out.
            For more granular sales, use an external sales contract.
      */
     function setVIPSalePrice(uint256 _salePrice) external onlyOwner {
@@ -267,7 +267,7 @@ contract SingleEditionMintable is
       @param _salePrice if sale price is 0 sale is stopped, otherwise that amount 
                        of ETH is needed to start the sale.
       @dev This sets the members ETH sales price
-           Setting a sales price allows users to mint the edition until it sells out.
+           Setting a sales price allows users to mint the drop until it sells out.
            For more granular sales, use an external sales contract.
      */
     function setMembersSalePrice(uint256 _salePrice) external onlyOwner {
@@ -288,7 +288,7 @@ contract SingleEditionMintable is
       @param generalSalePrice if sale price is 0 sale is stopped, otherwise that amount 
                        of ETH is needed to start the sale.                                              
       @dev This sets the members ETH sales price
-           Setting a sales price allows users to mint the edition until it sells out.
+           Setting a sales price allows users to mint the drop until it sells out.
            For more granular sales, use an external sales contract.
      */
     function setSalePrices(uint256 vipSalePrice, uint256 membersSalePrice, uint256 generalSalePrice) external onlyOwner {
@@ -373,7 +373,7 @@ contract SingleEditionMintable is
     function owner()
         public
         view
-        override(OwnableUpgradeable, IEditionSingleMintable)
+        override(OwnableUpgradeable, IExpandedNFT)
         returns (address)
     {
         return super.owner();
@@ -435,11 +435,11 @@ contract SingleEditionMintable is
     /// Returns the number of editions allowed to mint (max_uint256 when open edition)
     function numberCanMint() public view override returns (uint256) {
         // Return max int if open edition
-        if (editionSize == 0) {
+        if (dropSize == 0) {
             return type(uint256).max;
         }
         // _atEditionId is one-indexed hence the need to remove one here
-        return editionSize + 1 - _atEditionId.current();
+        return dropSize + 1 - _atEditionId.current();
     }
 
     /**
@@ -541,7 +541,7 @@ contract SingleEditionMintable is
     {
         uint256 startAt = _atEditionId.current();
         uint256 endAt = startAt + recipients.length - 1;
-        require(editionSize == 0 || endAt <= editionSize, "Sold out");
+        require(dropSize == 0 || endAt <= dropSize, "Sold out");
         while (_atEditionId.current() <= endAt) {
             _mint(
                 recipients[_atEditionId.current() - startAt],
@@ -624,7 +624,7 @@ contract SingleEditionMintable is
                 _imageUrl,
                 _animationUrl,
                 tokenId,
-                editionSize
+                dropSize
             );
     }
 

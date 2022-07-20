@@ -5,31 +5,31 @@ import parseDataURI from "data-urls";
 
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import {
-  SingleEditionMintableCreator,
-  SingleEditionMintable,
+  DropCreator,
+  ExpandedNFT,
 } from "../typechain";
 
-describe("SingleEditionMintable", () => {
+describe("ExpandedNFT", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
 
   let artist: SignerWithAddress;
   let artistAddress: string;    
 
-  let dynamicSketch: SingleEditionMintableCreator;
+  let dynamicSketch: DropCreator;
 
   beforeEach(async () => {
-    const { SingleEditionMintableCreator } = await deployments.fixture([
-      "SingleEditionMintableCreator",
-      "SingleEditionMintable",
+    const { DropCreator } = await deployments.fixture([
+      "DropCreator",
+      "ExpandedNFT",
     ]);
     const dynamicMintableAddress = (
-      await deployments.get("SingleEditionMintable")
+      await deployments.get("ExpandedNFT")
     ).address;
     dynamicSketch = (await ethers.getContractAt(
-      "SingleEditionMintableCreator",
-      SingleEditionMintableCreator.address
-    )) as SingleEditionMintableCreator;
+      "DropCreator",
+      DropCreator.address
+    )) as DropCreator;
 
     signer = (await ethers.getSigners())[0];
     signerAddress = await signer.getAddress();
@@ -39,7 +39,7 @@ describe("SingleEditionMintable", () => {
   });
 
   it("purchases a edition", async () => {
-    await dynamicSketch.createEdition(
+    await dynamicSketch.createDrop(
       artistAddress,
       "Testing Token",
       "TEST",
@@ -54,11 +54,11 @@ describe("SingleEditionMintable", () => {
       500        
     );
 
-    const editionResult = await dynamicSketch.getEditionAtId(0);
+    const dropResult = await dynamicSketch.getDropAtId(0);
     const minterContract = (await ethers.getContractAt(
-      "SingleEditionMintable",
-      editionResult
-    )) as SingleEditionMintable;
+      "ExpandedNFT",
+      dropResult
+    )) as ExpandedNFT;
     expect(await minterContract.name()).to.be.equal("Testing Token");
     expect(await minterContract.symbol()).to.be.equal("TEST");
 
