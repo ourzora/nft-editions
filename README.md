@@ -13,29 +13,10 @@ Based on the [Zora NFT Editions](https://github.com/ourzora/nft-editions) contra
    Contract that includes dynamic metadata generation for your editions removing the need for a centralized server.
    imageUrl and animationUrl can be base64-encoded data-uris for these contracts totally removing the need for IPFS
 
-## How do I create a new edition?
 
-call `createEdition` with the given arguments to create a new editions contract:
+## How do I create and use Expanded NFTs?
 
-- Name: Token Name Symbol (shows in etherscan)
-- Symbol: Symbol of the Token (shows in etherscan)
-- Description: Description of the Token (shows in the NFT description)
-- Animation URL: IPFS/Arweave URL of the animation (video, webpage, audio, etc)
-- Animation Hash: sha-256 hash of the animation, 0x0 if no animation url provided
-- Image URL: IPFS/Arweave URL of the image (image/, gifs are good for previewing images)
-- Image Hash: sha-256 hash of the image, 0x0 if no image url provided
-- Edition Size: Number of this edition, if set to 0 edition is not capped/limited
-- VIP Mint Limit: Number of the edition a VIP can mint when minting is restricted to VIP
-- Member Mint Limit: Number of the edition a member can mint when minting is restricted to members
-- BPS Royalty: 500 = 5%, 1000 = 10%, so on and so forth, set to 0 for no on-chain royalty (not supported by all marketplaces)
-
-## How do I sell/distribute editions?
-
-Now that you have a edition, there are multiple options for lazy-minting and sales:
-
-1. To sell editions for ETH you can call `setSalePrice`
-2. To allow certain accounts to mint `setApprovedMinter(address, approved)`.
-3. To mint yourself to a list of addresses you can call `mintEditions(addresses[])` to mint an edition to each address in the list.
+- [How do I create a new drop?](./docs/create-a-drop.md)
 
 ## How do I create a new contract?
 
