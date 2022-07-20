@@ -4,11 +4,11 @@ Based on the [Zora NFT Editions](https://github.com/ourzora/nft-editions) contra
 
 ## What are these contracts?
 
-1. `SingleEditionMintable`
-   Each edition is a unique contract.
+1. `ExpandedNFT`
+   Each drop is a unique contract.
    This allows for easy royalty collection, clear ownership of the collection, and your own contract 🎉
-2. `SingleEditionMintableCreator`
-   Gas-optimized factory contract allowing you to easily + for a low gas transaction create your own edition mintable contract.
+2. `DropCreator`
+   Gas-optimized factory contract allowing you to easily + for a low gas transaction create your own drop mintable contract.
 3. `SharedNFTLogic`
    Contract that includes dynamic metadata generation for your editions removing the need for a centralized server.
    imageUrl and animationUrl can be base64-encoded data-uris for these contracts totally removing the need for IPFS
@@ -41,8 +41,8 @@ Now that you have a edition, there are multiple options for lazy-minting and sal
 
 ### Directly on the blockchain:
 
-1. Find/Deploy the `SingleEditionMintableCreator` contract
-2. Call `createEdition` on the `SingleEditionMintableCreator`
+1. Find/Deploy the `DropCreator` contract
+2. Call `createDrop` on the `DropCreator`
 
 ## Developing with these contracts
 
@@ -69,5 +69,5 @@ Now that you have a edition, there are multiple options for lazy-minting and sal
 ### Rinkeby
 
 - SharedNFTLogic [0x707d795e898c32ebff02d717d8798fc1126ba001](https://rinkeby.etherscan.io/address/0x707d795e898c32ebff02d717d8798fc1126ba001)
-- SingleEditionMintable [0x1e6444BF4efc10e916c08410E33E5B753f0A1815](https://rinkeby.etherscan.io/address/0x1e6444BF4efc10e916c08410E33E5B753f0A1815)
-- SingleEditionMintableCreator [0x9692a6E918B8B87F4a533697E40F765e148fF334](https://rinkeby.etherscan.io/address/0x9692a6E918B8B87F4a533697E40F765e148fF334)
+- ExpandedNFT [0x1e6444BF4efc10e916c08410E33E5B753f0A1815](https://rinkeby.etherscan.io/address/0x1e6444BF4efc10e916c08410E33E5B753f0A1815)
+- DropCreator [0x9692a6E918B8B87F4a533697E40F765e148fF334](https://rinkeby.etherscan.io/address/0x9692a6E918B8B87F4a533697E40F765e148fF334)
