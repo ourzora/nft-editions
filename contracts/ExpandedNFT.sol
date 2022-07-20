@@ -19,7 +19,7 @@ import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/Cou
 import {AddressUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 
 import {SharedNFTLogic} from "./SharedNFTLogic.sol";
-import {IEditionSingleMintable} from "./IEditionSingleMintable.sol";
+import {IExpandedNFT} from "./IExpandedNFT.sol";
 
 /**
     This is a smart contract for handling dynamic contract minting.
@@ -30,7 +30,7 @@ import {IEditionSingleMintable} from "./IEditionSingleMintable.sol";
 */
 contract ExpandedNFT is
     ERC721Upgradeable,
-    IEditionSingleMintable,
+    IExpandedNFT,
     IERC2981Upgradeable,
     OwnableUpgradeable
 {
@@ -373,7 +373,7 @@ contract ExpandedNFT is
     function owner()
         public
         view
-        override(OwnableUpgradeable, IEditionSingleMintable)
+        override(OwnableUpgradeable, IExpandedNFT)
         returns (address)
     {
         return super.owner();
