@@ -13,17 +13,9 @@ Based on the [Zora NFT Editions](https://github.com/ourzora/nft-editions) contra
    Contract that includes dynamic metadata generation for your editions removing the need for a centralized server.
    imageUrl and animationUrl can be base64-encoded data-uris for these contracts totally removing the need for IPFS
 
-
 ## How do I create and use Expanded NFTs?
 
 - [How do I create a new drop?](./docs/create-a-drop.md)
-
-## How do I create a new contract?
-
-### Directly on the blockchain:
-
-1. Find/Deploy the `DropCreator` contract
-2. Call `createDrop` on the `DropCreator`
 
 ## Developing with these contracts
 
