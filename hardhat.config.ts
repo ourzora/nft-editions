@@ -5,6 +5,7 @@ import "hardhat-deploy";
 import "@nomiclabs/hardhat-etherscan";
 import { HardhatUserConfig } from "hardhat/config";
 import dotenv from 'dotenv';
+import "solidity-coverage";
 
 dotenv.config();
 
