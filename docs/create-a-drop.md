@@ -12,8 +12,6 @@
    - Image URL: `string` IPFS/Arweave URL of the image (image/, gifs are good for previewing images).
    - Image Hash: `SHA256` Hash of the image, 0x0 if no image url provided.
    - Drop Size: `uint256` The number of editions in this drop, if set to 0, the drop is not capped/limited.
-   - VIP Mint Limit: `uint256` The number of the editions a VIP can mint when minting is restricted to VIP.
-   - Member Mint Limit: `uint256` The number of the editions a member can mint when minting is restricted to members.
    - BPS Royalty: `uint256` In [Basis points][bps] (BPS). 500 = 5%, 1000 = 10%, so on and so forth, set to 0 for no on-chain royalty (not supported by all marketplaces).
    - BPS Split: `uint256` In [Basis points][bps] (BPS). 500 = 5%, 1000 = 10%, so on and so forth, set to 0 for no on-chain royalty (not supported by all marketplaces).
 
