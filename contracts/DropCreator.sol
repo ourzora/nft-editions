@@ -6,7 +6,7 @@
     
  */
 
-pragma solidity ^0.8.6;
+pragma solidity ^0.8.15;
 
 import {ClonesUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
