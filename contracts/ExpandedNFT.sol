@@ -49,6 +49,10 @@ contract ExpandedNFT is
     event DeliveryAccepted(uint256 tokenId);
 
     struct PerToken { 
+        // Hashmap of the Edition ID to the current 
+        ExpandedNFTStates editionState;
+        uint256 editionFee; 
+
         // animation_url field in the metadata
         string redeemedAnimationUrl;
 
@@ -66,10 +70,6 @@ contract ExpandedNFT is
 
         // Hash for the condition report
         bytes32 conditionReportHash;
-
-        // Hashmap of the Edition ID to the current 
-        ExpandedNFTStates editionState;
-        uint256 editionFee; 
     }
 
     struct Pricing { 
