@@ -30,7 +30,7 @@ contract DropCreator {
 
     /// Creates a new drop contract as a factory with a deterministic address
     /// Important: None of these fields (except the Url fields with the same hash) can be changed after calling
-    /// @param _artist User that created the drop
+    /// @param _artistWallet User that created the drop
     /// @param _name Name of the drop contract
     /// @param _symbol Symbol of the drop contract
     /// @param _description Metadata: Description of the drop entry
@@ -41,7 +41,7 @@ contract DropCreator {
     /// @param _dropSize Total size of the drop (number of possible editions)
     /// @param _royaltyBPS BPS amount of royalty
     function createDrop(
-        address _artist,
+        address _artistWallet,
         string memory _name,
         string memory _symbol,
         string memory _description,
@@ -60,7 +60,7 @@ contract DropCreator {
 
         ExpandedNFT(newContract).initialize(
             msg.sender,
-            _artist,
+            _artistWallet,
             _name,
             _symbol,
             _description,

@@ -90,7 +90,7 @@ contract ExpandedNFT is
     string public description;
 
     // Artists wallet address
-    address private _artist;
+    address private _artistWallet;
 
     // Minted
 
@@ -136,7 +136,7 @@ contract ExpandedNFT is
 
     /**
       @param _owner wallet addres for the user that owns and can mint the drop, gets royalty and sales payouts and can update the base url if needed.
-      @param artist wallet address for thr User that created the drop
+      @param artistWallet wallet address for thr User that created the drop
       @param _name Name of drop, used in the title as "$NAME NUMBER/TOTAL"
       @param _symbol Symbol of the new token contract
       @param _description Description of drop, used in the description field of the NFT
@@ -153,7 +153,7 @@ contract ExpandedNFT is
      */
     function initialize(
         address _owner,
-        address artist,
+        address artistWallet,
         string memory _name,
         string memory _symbol,
         string memory _description,
@@ -176,7 +176,7 @@ contract ExpandedNFT is
         _imageUrl = imageUrl;
         _imageHash = imageHash;
         
-        _artist = artist;
+        _artistWallet = artistWallet;
         dropSize = _dropSize;
         _pricing.royaltyBPS = royaltyBPS;
         _pricing.splitBPS = splitBPS;
@@ -306,7 +306,7 @@ contract ExpandedNFT is
 
         // No need for gas limit to trusted address.
         AddressUpgradeable.sendValue(payable(owner()), platformFee);
-        AddressUpgradeable.sendValue(payable(_artist), artistFee);
+        AddressUpgradeable.sendValue(payable(_artistWallet), artistFee);
     }
 
     /**
