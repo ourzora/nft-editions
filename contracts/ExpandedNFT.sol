@@ -212,6 +212,32 @@ contract ExpandedNFT is
     }
 
     /**
+      @param _royaltyBPS BPS of the royalty set on the contract. Can be 0 for no royalty.
+      @param _splitBPS BPS of the royalty set on the contract. Can be 0 for no royalty. 
+      @param _vipSalePrice Sale price foe VIPs
+      @param _membersSalePrice SalePrice for Members  
+      @param _generalSalePrice SalePrice for the general public                                                                           
+      @dev Set various pricing related values
+     */
+    function setPricing (
+        uint256 _royaltyBPS,
+        uint256 _splitBPS,
+        uint256 _vipSalePrice,
+        uint256 _membersSalePrice,      
+        uint256 _generalSalePrice    
+    ) external onlyOwner {
+    
+        _pricing.royaltyBPS = _royaltyBPS;
+        _pricing.splitBPS = _splitBPS;
+
+        _pricing.vipSalePrice = _vipSalePrice;
+        _pricing.membersSalePrice = _membersSalePrice;
+        salePrice = _generalSalePrice;
+
+        emit PriceChanged(salePrice);
+    }
+
+    /**
       @dev returns the current ETH sales price
            based on who can currently mint.
      */
