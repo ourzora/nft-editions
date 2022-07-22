@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.6;
+
+pragma solidity ^0.8.15;
 
 /// Shared public library for on-chain NFT functions
 interface IPublicSharedMetadata {

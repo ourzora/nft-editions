@@ -4,7 +4,7 @@
 2. Call `createDrop` in `DropCreator` with the given arguments to create a new drop contract:
 
    - ArtistWallet: `address` The address of the create of the drop. Used for paying royalties.
-   - Name:  `string` Token Name Symbol (shows in etherscan).
+   - Name: `string` Token Name Symbol (shows in etherscan).
    - Symbol: `string` Symbol of the Token (shows in etherscan).
    - Description: `string` Description of the Token (shows in the NFT description).
    - Animation URL: `string` IPFS/Arweave URL of the animation (video, webpage, audio, etc).

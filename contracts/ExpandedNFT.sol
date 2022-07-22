@@ -6,7 +6,7 @@
 
  */
 
-pragma solidity ^0.8.6;
+pragma solidity ^0.8.15;
 
 import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {IERC2981Upgradeable, IERC165Upgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
@@ -49,6 +49,10 @@ contract ExpandedNFT is
     event DeliveryAccepted(uint256 tokenId);
 
     struct PerToken { 
+        // Hashmap of the Edition ID to the current 
+        ExpandedNFTStates editionState;
+        uint256 editionFee; 
+
         // animation_url field in the metadata
         string redeemedAnimationUrl;
 
@@ -66,10 +70,6 @@ contract ExpandedNFT is
 
         // Hash for the condition report
         bytes32 conditionReportHash;
-
-        // Hashmap of the Edition ID to the current 
-        ExpandedNFTStates editionState;
-        uint256 editionFee; 
     }
 
     struct Pricing { 
@@ -90,7 +90,7 @@ contract ExpandedNFT is
     string public description;
 
     // Artists wallet address
-    address private _artist;
+    address private _artistWallet;
 
     // Minted
 
@@ -136,7 +136,7 @@ contract ExpandedNFT is
 
     /**
       @param _owner wallet addres for the user that owns and can mint the drop, gets royalty and sales payouts and can update the base url if needed.
-      @param artist wallet address for thr User that created the drop
+      @param artistWallet wallet address for thr User that created the drop
       @param _name Name of drop, used in the title as "$NAME NUMBER/TOTAL"
       @param _symbol Symbol of the new token contract
       @param _description Description of drop, used in the description field of the NFT
@@ -145,15 +145,13 @@ contract ExpandedNFT is
       @param animationUrl Animation URL of the drop. Not required, but if omitted image URL needs to be included. This follows the opensea spec for NFTs
       @param animationHash The associated hash of the animation in sha-256 bytes32 format. If animation is omitted the hash can be zero.
       @param _dropSize Number of editions that can be minted in total. If 0, unlimited editions can be minted.
-      @param royaltyBPS BPS of the royalty set on the contract. Can be 0 for no royalty.
-      @param splitBPS BPS of the royalty set on the contract. Can be 0 for no royalty.        
       @dev Function to create a new drop. Can only be called by the allowed creator
            Sets the only allowed minter to the address that creates/owns the drop.
            This can be re-assigned or updated later
      */
     function initialize(
         address _owner,
-        address artist,
+        address artistWallet,
         string memory _name,
         string memory _symbol,
         string memory _description,
@@ -161,9 +159,7 @@ contract ExpandedNFT is
         bytes32 animationHash,
         string memory imageUrl,
         bytes32 imageHash,
-        uint256 _dropSize,
-        uint256 royaltyBPS,
-        uint256 splitBPS
+        uint256 _dropSize
     ) public initializer {
         __ERC721_init(_name, _symbol);
         __Ownable_init();
@@ -176,10 +172,8 @@ contract ExpandedNFT is
         _imageUrl = imageUrl;
         _imageHash = imageHash;
         
-        _artist = artist;
+        _artistWallet = artistWallet;
         dropSize = _dropSize;
-        _pricing.royaltyBPS = royaltyBPS;
-        _pricing.splitBPS = splitBPS;
 
         // Set edition id start to be 1 not 0
         _atEditionId.increment();
@@ -209,6 +203,31 @@ contract ExpandedNFT is
         toMint[0] = msg.sender;
         emit EditionSold(currentPrice, msg.sender);
         return _mintEditions(toMint);
+    }
+
+    /**
+      @param _royaltyBPS BPS of the royalty set on the contract. Can be 0 for no royalty.
+      @param _splitBPS BPS of the royalty set on the contract. Can be 0 for no royalty. 
+      @param _vipSalePrice Sale price foe VIPs
+      @param _membersSalePrice SalePrice for Members  
+      @param _generalSalePrice SalePrice for the general public                                                                           
+      @dev Set various pricing related values
+     */
+    function setPricing (
+        uint256 _royaltyBPS,
+        uint256 _splitBPS,
+        uint256 _vipSalePrice,
+        uint256 _membersSalePrice,      
+        uint256 _generalSalePrice    
+    ) external onlyOwner {  
+        _pricing.royaltyBPS = _royaltyBPS;
+        _pricing.splitBPS = _splitBPS;
+
+        _pricing.vipSalePrice = _vipSalePrice;
+        _pricing.membersSalePrice = _membersSalePrice;
+        salePrice = _generalSalePrice;
+
+        emit PriceChanged(salePrice);
     }
 
     /**
@@ -306,7 +325,7 @@ contract ExpandedNFT is
 
         // No need for gas limit to trusted address.
         AddressUpgradeable.sendValue(payable(owner()), platformFee);
-        AddressUpgradeable.sendValue(payable(_artist), artistFee);
+        AddressUpgradeable.sendValue(payable(_artistWallet), artistFee);
     }
 
     /**

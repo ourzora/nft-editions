@@ -5,6 +5,7 @@ import "hardhat-deploy";
 import "@nomiclabs/hardhat-etherscan";
 import { HardhatUserConfig } from "hardhat/config";
 import dotenv from 'dotenv';
+import "solidity-coverage";
 
 dotenv.config();
 
@@ -64,7 +65,7 @@ const config: HardhatUserConfig = {
     purchaser: 0,
   },
   solidity: {
-    version: "0.8.6",
+    version: "0.8.15",
     settings: {
       optimizer: {
         enabled: true,

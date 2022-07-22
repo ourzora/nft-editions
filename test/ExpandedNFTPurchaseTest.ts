@@ -48,10 +48,7 @@ describe("ExpandedNFT", () => {
       "0x0000000000000000000000000000000000000000000000000000000000000000",
       "",
       "0x0000000000000000000000000000000000000000000000000000000000000000",
-      10,
-      10,
-      // 50% split since BPS
-      500        
+      10    
     );
 
     const dropResult = await dynamicSketch.getDropAtId(0);
@@ -59,6 +56,9 @@ describe("ExpandedNFT", () => {
       "ExpandedNFT",
       dropResult
     )) as ExpandedNFT;
+
+    minterContract.setPricing(10, 500, 10, 10, 10); 
+
     expect(await minterContract.name()).to.be.equal("Testing Token");
     expect(await minterContract.symbol()).to.be.equal("TEST");
 
