@@ -50,10 +50,7 @@ describe("ExpandedNFT", () => {
       "",
       "0x0000000000000000000000000000000000000000000000000000000000000000",
       // 1% royalty since BPS
-      10,
-      10,
-      // 50% split since BPS
-      500      
+      10    
     );
 
     const dropResult = await dynamicSketch.getDropAtId(0);
@@ -61,6 +58,9 @@ describe("ExpandedNFT", () => {
       "ExpandedNFT",
       dropResult
     )) as ExpandedNFT;
+
+    minterContract.setPricing(10, 500, 0, 0, 0); 
+
     expect(await minterContract.name()).to.be.equal("Testing Token");
     expect(await minterContract.symbol()).to.be.equal("TEST");
     const dropUris = await minterContract.getURIs();
@@ -92,10 +92,7 @@ describe("ExpandedNFT", () => {
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         "",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
-        10,
-        10,
-        // 50% split since BPS
-        500        
+        10     
       );
 
       const dropResult = await dynamicSketch.getDropAtId(0);
@@ -103,6 +100,8 @@ describe("ExpandedNFT", () => {
         "ExpandedNFT",
         dropResult
       )) as ExpandedNFT;
+
+      minterContract.setPricing(10, 500, 0, 0, 0);       
     });
     it("creates a new drop", async () => {
       expect(await signer1.getBalance()).to.eq(
@@ -155,10 +154,7 @@ describe("ExpandedNFT", () => {
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         "",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
-        0,
-        0,
-        // 50% split since BPS
-        500
+        0
       );
 
       const dropResult = await dynamicSketch.getDropAtId(1);
@@ -166,6 +162,8 @@ describe("ExpandedNFT", () => {
         "ExpandedNFT",
         dropResult
       )) as ExpandedNFT;
+
+      minterContract.setPricing(0, 500, 0, 0, 0); 
 
       expect(await minterContract.totalSupply()).to.be.equal(0);
 
@@ -248,10 +246,7 @@ describe("ExpandedNFT", () => {
           "0x0000000000000000000000000000000000000000000000000000000000000000",
           "uri",
           "0x0000000000000000000000000000000000000000000000000000000000000000",
-          12,
-          12,
-          // 50% split since BPS
-          500          
+          12      
         )
       ).to.be.revertedWith("Initializable: contract is already initialized");
       await minterContract.mintEdition(await signer1.getAddress());
@@ -311,11 +306,7 @@ describe("ExpandedNFT", () => {
           "0x0000000000000000000000000000000000000000000000000000000000000000",
           "",
           "0x0000000000000000000000000000000000000000000000000000000000000000",
-          // 2% royalty since BPS
-          200,
-          200,
-          // 50% split since BPS
-          500          
+          200         
         );
 
         const dropResult = await dynamicSketch.getDropAtId(1);
@@ -323,6 +314,8 @@ describe("ExpandedNFT", () => {
           "ExpandedNFT",
           dropResult
         )) as ExpandedNFT;
+
+        minterContractNew.setPricing(200, 500, 0, 0, 0); 
 
         await minterContractNew.mintEdition(signerAddress);
         expect(
@@ -346,10 +339,7 @@ describe("ExpandedNFT", () => {
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         "",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
-        0,
-        0,
-        // 50% split since BPS
-        500
+        0
       );
 
       const dropResult = await dynamicSketch.getDropAtId(1);
@@ -357,6 +347,8 @@ describe("ExpandedNFT", () => {
         "ExpandedNFT",
         dropResult
       )) as ExpandedNFT;
+
+      minterContract.setPricing(0, 500, 0, 0, 0); 
 
       const [s1, s2, s3] = await ethers.getSigners();
       const [s1a, s2a, s3a] = [
