@@ -44,13 +44,12 @@ describe("ExpandedNFT", () => {
       artistAddress,
       "Testing Token",
       "TEST",
+      10, // 1% royalty since BPS  
       "This is a testing token for all",
       "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
       "0x0000000000000000000000000000000000000000000000000000000000000000",
       "",
-      "0x0000000000000000000000000000000000000000000000000000000000000000",
-      // 1% royalty since BPS
-      10    
+      "0x0000000000000000000000000000000000000000000000000000000000000000"  
     );
 
     const dropResult = await dynamicSketch.getDropAtId(0);
@@ -87,12 +86,12 @@ describe("ExpandedNFT", () => {
         artistAddress,
         "Testing Token",
         "TEST",
+        10,
         "This is a testing token for all",
         "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         "",
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-        10     
+        "0x0000000000000000000000000000000000000000000000000000000000000000"  
       );
 
       const dropResult = await dynamicSketch.getDropAtId(0);
@@ -149,12 +148,12 @@ describe("ExpandedNFT", () => {
         artistAddress,
         "Testing Token",
         "TEST",
+        0,
         "This is a testing token for all",
         "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         "",
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-        0
+        "0x0000000000000000000000000000000000000000000000000000000000000000"
       );
 
       const dropResult = await dynamicSketch.getDropAtId(1);
@@ -241,12 +240,12 @@ describe("ExpandedNFT", () => {
           artistAddress,
           "test name",
           "SYM",
+          12,          
           "description",
           "animation",
           "0x0000000000000000000000000000000000000000000000000000000000000000",
           "uri",
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
-          12      
+          "0x0000000000000000000000000000000000000000000000000000000000000000"
         )
       ).to.be.revertedWith("Initializable: contract is already initialized");
       await minterContract.mintEdition(await signer1.getAddress());
@@ -301,12 +300,12 @@ describe("ExpandedNFT", () => {
           artistAddress,
           "Testing Token",
           "TEST",
+          200,             
           "This is a testing token for all",
           "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
           "0x0000000000000000000000000000000000000000000000000000000000000000",
           "",
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
-          200         
+          "0x0000000000000000000000000000000000000000000000000000000000000000"      
         );
 
         const dropResult = await dynamicSketch.getDropAtId(1);
@@ -334,12 +333,12 @@ describe("ExpandedNFT", () => {
         artistAddress,
         "Testing Token",
         "TEST",
+        0,
         "This is a testing token for all",
         "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
         "0x0000000000000000000000000000000000000000000000000000000000000000",
         "",
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-        0
+        "0x0000000000000000000000000000000000000000000000000000000000000000"
       );
 
       const dropResult = await dynamicSketch.getDropAtId(1);

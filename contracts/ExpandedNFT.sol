@@ -139,12 +139,12 @@ contract ExpandedNFT is
       @param artistWallet wallet address for thr User that created the drop
       @param _name Name of drop, used in the title as "$NAME NUMBER/TOTAL"
       @param _symbol Symbol of the new token contract
+      @param _dropSize Number of editions that can be minted in total. If 0, unlimited editions can be minted.      
       @param _description Description of drop, used in the description field of the NFT
       @param imageUrl Image URL of the drop. Strongly encouraged to be used, if necessary, only animation URL can be used. One of animation and image url need to exist in a drop to render the NFT.
       @param imageHash SHA256 of the given image in bytes32 format (0xHASH). If no image is included, the hash can be zero.
       @param animationUrl Animation URL of the drop. Not required, but if omitted image URL needs to be included. This follows the opensea spec for NFTs
       @param animationHash The associated hash of the animation in sha-256 bytes32 format. If animation is omitted the hash can be zero.
-      @param _dropSize Number of editions that can be minted in total. If 0, unlimited editions can be minted.
       @dev Function to create a new drop. Can only be called by the allowed creator
            Sets the only allowed minter to the address that creates/owns the drop.
            This can be re-assigned or updated later
@@ -154,12 +154,12 @@ contract ExpandedNFT is
         address artistWallet,
         string memory _name,
         string memory _symbol,
+        uint256 _dropSize,
         string memory _description,
         string memory animationUrl,
         bytes32 animationHash,
         string memory imageUrl,
-        bytes32 imageHash,
-        uint256 _dropSize
+        bytes32 imageHash
     ) public initializer {
         __ERC721_init(_name, _symbol);
         __Ownable_init();

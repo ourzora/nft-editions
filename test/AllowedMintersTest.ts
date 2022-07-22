@@ -39,13 +39,12 @@ describe("AllowedMinters", () => {
       artistAddress,
       "Testing Token",
       "TEST",
+      10, // 1% royalty since BPS     
       "This is a testing token for all",
       "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
       "0x0000000000000000000000000000000000000000000000000000000000000000",
       "",
-      "0x0000000000000000000000000000000000000000000000000000000000000000",
-      // 1% royalty since BPS
-      10
+      "0x0000000000000000000000000000000000000000000000000000000000000000"
     );
 
     const dropResult = await dynamicSketch.getDropAtId(0);

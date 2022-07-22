@@ -43,12 +43,12 @@ describe("ExpandedNFT", () => {
       artistAddress,
       "Testing Token",
       "TEST",
+      10,         
       "This is a testing token for all",
       "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
       "0x0000000000000000000000000000000000000000000000000000000000000000",
       "",
-      "0x0000000000000000000000000000000000000000000000000000000000000000",
-      10    
+      "0x0000000000000000000000000000000000000000000000000000000000000000" 
     );
 
     const dropResult = await dynamicSketch.getDropAtId(0);
