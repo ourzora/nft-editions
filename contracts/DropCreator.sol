@@ -49,7 +49,7 @@ contract DropCreator {
         string[] memory _imageUrl,
         bytes32[] memory _imageHash
     ) external returns (uint256) {
-        require(_dropSize > 0, "Drop must have a size greater than zero");
+        require(_dropSize > 0, "Drop size must be > 0");
 
         address newContract = ClonesUpgradeable.cloneDeterministic(
             implementation,

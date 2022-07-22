@@ -160,7 +160,7 @@ contract ExpandedNFT is
         string[] memory imageUrl,
         bytes32[] memory imageHash
     ) public initializer {
-        require(_dropSize > 0, "Drop must have a size greater than zero");
+        require(_dropSize > 0, "Drop size must be > 0");
 
         __ERC721_init(_name, _symbol);
         __Ownable_init();
