@@ -51,23 +51,33 @@ contract ExpandedNFT is
     struct PerToken { 
         // Hashmap of the Edition ID to the current 
         ExpandedNFTStates editionState;
+
+        // Redemption price
         uint256 editionFee; 
+
+        // Minted
+
+        // animation_url field in the metadata
+        string animationUrl;
+        // Hash for the associated animation
+        bytes32 animationHash;
+        // Image in the metadata
+        string imageUrl;
+        // Hash for the associated image
+        bytes32 imageHash;
+
+        // Redeemed
 
         // animation_url field in the metadata
         string redeemedAnimationUrl;
-
         // Hash for the associated animation
         bytes32 redeemedAnimationHash;
-
         // Image in the metadata
         string redeemedImageUrl;
-
         // Hash for the associated image
         bytes32 redeemedImageHash;
-
         // Condition report in the metadata
         string conditionReportUrl;
-
         // Hash for the condition report
         bytes32 conditionReportHash;
     }
@@ -91,17 +101,6 @@ contract ExpandedNFT is
 
     // Artists wallet address
     address private _artistWallet;
-
-    // Minted
-
-    // animation_url field in the metadata
-    string private _animationUrl;
-    // Hash for the associated animation
-    bytes32 private _animationHash;
-    // Image in the metadata
-    string private _imageUrl;
-    // Hash for the associated image
-    bytes32 private _imageHash;
 
     // Per Token data
     mapping(uint256 => PerToken) private _perTokenMetadata;
@@ -139,7 +138,7 @@ contract ExpandedNFT is
       @param artistWallet wallet address for thr User that created the drop
       @param _name Name of drop, used in the title as "$NAME NUMBER/TOTAL"
       @param _symbol Symbol of the new token contract
-      @param _dropSize Number of editions that can be minted in total. If 0, unlimited editions can be minted.      
+      @param _dropSize Number of editions that can be minted in total.    
       @param _description Description of drop, used in the description field of the NFT
       @param imageUrl Image URL of the drop. Strongly encouraged to be used, if necessary, only animation URL can be used. One of animation and image url need to exist in a drop to render the NFT.
       @param imageHash SHA256 of the given image in bytes32 format (0xHASH). If no image is included, the hash can be zero.
@@ -156,29 +155,34 @@ contract ExpandedNFT is
         string memory _symbol,
         uint256 _dropSize,
         string memory _description,
-        string memory animationUrl,
-        bytes32 animationHash,
-        string memory imageUrl,
-        bytes32 imageHash
+        string[] memory animationUrl,
+        bytes32[] memory animationHash,
+        string[] memory imageUrl,
+        bytes32[] memory imageHash
     ) public initializer {
+        require(_dropSize > 0, "Drop must have a size greater than zero");
+
         __ERC721_init(_name, _symbol);
         __Ownable_init();
         // Set ownership to original sender of contract call
         transferOwnership(_owner);
-        
-        description = _description;
-        _animationUrl = animationUrl;
-        _animationHash = animationHash;
-        _imageUrl = imageUrl;
-        _imageHash = imageHash;
-        
+
         _artistWallet = artistWallet;
         dropSize = _dropSize;
 
         // Set edition id start to be 1 not 0
         _atEditionId.increment();
-    }
 
+        description = _description;
+
+        for (uint i = 0; i < dropSize; i++) {
+            uint index = i + 1;
+            _perTokenMetadata[index].animationUrl = animationUrl[i];
+            _perTokenMetadata[index].animationHash = animationHash[i];
+            _perTokenMetadata[index].imageUrl = imageUrl[i];
+            _perTokenMetadata[index].imageHash = imageHash[i];
+        }
+    }
 
     /// @dev returns the number of minted tokens within the drop
     function totalSupply() public view returns (uint256) {
@@ -415,7 +419,7 @@ contract ExpandedNFT is
            This setup is similar to setApprovalForAll in the ERC721 spec.
      */
     function setApprovedMinters(uint256 count, address[] calldata minter, bool[] calldata allowed) public onlyOwner {
-        for (uint256 i=0; i < count; i++) {
+        for (uint256 i = 0; i < count; i++) {
             _allowedMinters[minter[i]] = allowed[i];
         }
     }
@@ -430,7 +434,7 @@ contract ExpandedNFT is
            This setup is similar to setApprovalForAll in the ERC721 spec.
      */
     function setApprovedVIPMinters(uint256 count, address[] calldata minter, bool[] calldata allowed) public onlyOwner {
-        for (uint256 i=0; i < count; i++) {
+        for (uint256 i = 0; i < count; i++) {
             _vipAllowedMinters[minter[i]] = allowed[i];
         }
     }
@@ -440,11 +444,12 @@ contract ExpandedNFT is
            Only URLs can be updated (data-uris are supported), hashes cannot be updated.
      */
     function updateEditionURLs(
+        uint256 tokenId,
         string memory imageUrl,
         string memory animationUrl
     ) public onlyOwner {
-        _imageUrl = imageUrl;
-        _animationUrl = animationUrl;
+        _perTokenMetadata[tokenId].imageUrl = imageUrl;
+        _perTokenMetadata[tokenId].animationUrl = animationUrl;
     }
 
     /// Returns the number of editions allowed to mint (max_uint256 when open edition)
@@ -575,7 +580,7 @@ contract ExpandedNFT is
       @dev Get URIs for edition NFT
       @return _imageUrl, _imageHash, _animationUrl, _animationHash
      */
-    function getURIs()
+    function getURIs(uint256 tokenId)
         public
         view
         returns (
@@ -585,7 +590,8 @@ contract ExpandedNFT is
             bytes32
         )
     {
-        return (_imageUrl, _imageHash, _animationUrl, _animationHash);
+        return (_perTokenMetadata[tokenId].imageUrl, _perTokenMetadata[tokenId].imageHash,
+                _perTokenMetadata[tokenId].animationUrl, _perTokenMetadata[tokenId].animationHash);
     }
 
     /**
@@ -636,8 +642,8 @@ contract ExpandedNFT is
             _sharedNFTLogic.createMetadataEdition(
                 name(),
                 description,
-                _imageUrl,
-                _animationUrl,
+                _perTokenMetadata[tokenId].imageUrl,
+                _perTokenMetadata[tokenId].animationUrl,
                 tokenId,
                 dropSize
             );

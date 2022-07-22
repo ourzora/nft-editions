@@ -46,10 +46,20 @@ describe("ExpandedNFT", () => {
       "TEST",
       10, // 1% royalty since BPS  
       "This is a testing token for all",
-      "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
-      "0x0000000000000000000000000000000000000000000000000000000000000000",
-      "",
-      "0x0000000000000000000000000000000000000000000000000000000000000000"  
+      ["https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+      "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+        "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+        "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+        "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy"],
+      ["0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "0x0000000000000000000000000000000000000000000000000000000000000000"],
+      ["", "", "", "", "", "", "", "", "", ""],
+      ["0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "0x0000000000000000000000000000000000000000000000000000000000000000"]
     );
 
     const dropResult = await dynamicSketch.getDropAtId(0);
@@ -62,7 +72,7 @@ describe("ExpandedNFT", () => {
 
     expect(await minterContract.name()).to.be.equal("Testing Token");
     expect(await minterContract.symbol()).to.be.equal("TEST");
-    const dropUris = await minterContract.getURIs();
+    const dropUris = await minterContract.getURIs(1);
     expect(dropUris[0]).to.be.equal("");
     expect(dropUris[1]).to.be.equal(
       "0x0000000000000000000000000000000000000000000000000000000000000000"
@@ -88,10 +98,20 @@ describe("ExpandedNFT", () => {
         "TEST",
         10,
         "This is a testing token for all",
-        "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-        "",
-        "0x0000000000000000000000000000000000000000000000000000000000000000"  
+        ["https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+        "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+          "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+          "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+          "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy"],
+        ["0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000000000000000000000000000"],
+        ["", "", "", "", "", "", "", "", "", ""],
+        ["0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000000000000000000000000000"]
       );
 
       const dropResult = await dynamicSketch.getDropAtId(0);
@@ -144,80 +164,17 @@ describe("ExpandedNFT", () => {
     });
     it("creates an unbounded drop", async () => {
       // no limit for drop size
-      await dynamicSketch.createDrop(
+      await expect(dynamicSketch.createDrop(
         artistAddress,
         "Testing Token",
         "TEST",
         0,
         "This is a testing token for all",
-        "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-        "",
-        "0x0000000000000000000000000000000000000000000000000000000000000000"
-      );
-
-      const dropResult = await dynamicSketch.getDropAtId(1);
-      minterContract = (await ethers.getContractAt(
-        "ExpandedNFT",
-        dropResult
-      )) as ExpandedNFT;
-
-      minterContract.setPricing(0, 500, 0, 0, 0); 
-
-      expect(await minterContract.totalSupply()).to.be.equal(0);
-
-      // Mint first edition
-      await expect(minterContract.mintEdition(signerAddress))
-        .to.emit(minterContract, "Transfer")
-        .withArgs(
-          "0x0000000000000000000000000000000000000000",
-          signerAddress,
-          1
-        );
-
-      expect(await minterContract.totalSupply()).to.be.equal(1);
-
-      // Mint second edition
-      await expect(minterContract.mintEdition(signerAddress))
-        .to.emit(minterContract, "Transfer")
-        .withArgs(
-          "0x0000000000000000000000000000000000000000",
-          signerAddress,
-          2
-        );
-
-      expect(await minterContract.totalSupply()).to.be.equal(2);
-
-      const tokenURI = await minterContract.tokenURI(1);
-      const parsedTokenURI = parseDataURI(tokenURI);
-      if (!parsedTokenURI) {
-        throw "No parsed token uri";
-      }
-
-      const tokenURI2 = await minterContract.tokenURI(2);
-      const parsedTokenURI2 = parseDataURI(tokenURI2);
-
-      // Check metadata from edition
-      const uriData = Buffer.from(parsedTokenURI.body).toString("utf-8");
-      const metadata = JSON.parse(uriData);
-
-      const uriData2 = Buffer.from(parsedTokenURI2?.body || "").toString(
-        "utf-8"
-      );
-      const metadata2 = JSON.parse(uriData2);
-      expect(metadata2.name).to.be.equal("Testing Token 2");
-
-      expect(parsedTokenURI.mimeType.type).to.equal("application");
-      expect(parsedTokenURI.mimeType.subtype).to.equal("json");
-      expect(JSON.stringify(metadata)).to.equal(
-        JSON.stringify({
-          name: "Testing Token 1",
-          description: "This is a testing token for all",
-          animation_url:
-            "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy?id=1",
-          properties: { number: 1, name: "Testing Token" },
-        })
-      );
+        ["https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy"],
+        ["0x0000000000000000000000000000000000000000000000000000000000000000"],
+        [""],
+        ["0x0000000000000000000000000000000000000000000000000000000000000000"]
+      )).to.be.reverted;
     });
     it("creates an authenticated edition", async () => {
       await minterContract.mintEdition(await signer1.getAddress());
@@ -239,13 +196,23 @@ describe("ExpandedNFT", () => {
           signerAddress,
           artistAddress,
           "test name",
-          "SYM",
+          "SYM", 
           12,          
           "description",
-          "animation",
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "uri",
-          "0x0000000000000000000000000000000000000000000000000000000000000000"
+          ["animation", "animation",
+          "animation", "animation",
+          "animation", "animation",
+          "animation", "animation",
+          "animation", "animation"],
+          ["0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000"],
+          ["uri", "uri", "uri", "uri", "uri", "uri", "uri", "uri", "uri", "uri"],
+          ["0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000"]
         )
       ).to.be.revertedWith("Initializable: contract is already initialized");
       await minterContract.mintEdition(await signer1.getAddress());
@@ -300,12 +267,22 @@ describe("ExpandedNFT", () => {
           artistAddress,
           "Testing Token",
           "TEST",
-          200,             
+          10,             
           "This is a testing token for all",
-          "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
-          "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "",
-          "0x0000000000000000000000000000000000000000000000000000000000000000"      
+          ["https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+          "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+            "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+            "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
+            "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy", "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy"],
+          ["0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000"],
+          ["", "", "", "", "", "", "", "", "", ""],
+          ["0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000000000000000000000000000000000000000000000"]    
         );
 
         const dropResult = await dynamicSketch.getDropAtId(1);
@@ -326,42 +303,6 @@ describe("ExpandedNFT", () => {
           )[1]
         ).to.be.equal(ethers.utils.parseEther("0.02"));
       });
-    });
-    it("mints a large batch", async () => {
-      // no limit for drop size
-      await dynamicSketch.createDrop(
-        artistAddress,
-        "Testing Token",
-        "TEST",
-        0,
-        "This is a testing token for all",
-        "https://ipfs.io/ipfsbafybeify52a63pgcshhbtkff4nxxxp2zp5yjn2xw43jcy4knwful7ymmgy",
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-        "",
-        "0x0000000000000000000000000000000000000000000000000000000000000000"
-      );
-
-      const dropResult = await dynamicSketch.getDropAtId(1);
-      minterContract = (await ethers.getContractAt(
-        "ExpandedNFT",
-        dropResult
-      )) as ExpandedNFT;
-
-      minterContract.setPricing(0, 500, 0, 0, 0); 
-
-      const [s1, s2, s3] = await ethers.getSigners();
-      const [s1a, s2a, s3a] = [
-        await s1.getAddress(),
-        await s2.getAddress(),
-        await s3.getAddress(),
-      ];
-      const toAddresses = [];
-      for (let i = 0; i < 100; i++) {
-        toAddresses.push(s1a);
-        toAddresses.push(s2a);
-        toAddresses.push(s3a);
-      }
-      await minterContract.mintEditions(toAddresses);
     });
     it("stops after editions are sold out", async () => {
       const [_, signer1] = await ethers.getSigners();

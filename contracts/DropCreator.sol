@@ -44,11 +44,13 @@ contract DropCreator {
         string memory _symbol,
         uint256 _dropSize,
         string memory _description,
-        string memory _animationUrl,
-        bytes32 _animationHash,
-        string memory _imageUrl,
-        bytes32 _imageHash
+        string[] memory _animationUrl,
+        bytes32[] memory _animationHash,
+        string[] memory _imageUrl,
+        bytes32[] memory _imageHash
     ) external returns (uint256) {
+        require(_dropSize > 0, "Drop must have a size greater than zero");
+
         address newContract = ClonesUpgradeable.cloneDeterministic(
             implementation,
             bytes32(abi.encodePacked(_atContract.current()))
