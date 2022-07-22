@@ -145,8 +145,6 @@ contract ExpandedNFT is
       @param animationUrl Animation URL of the drop. Not required, but if omitted image URL needs to be included. This follows the opensea spec for NFTs
       @param animationHash The associated hash of the animation in sha-256 bytes32 format. If animation is omitted the hash can be zero.
       @param _dropSize Number of editions that can be minted in total. If 0, unlimited editions can be minted.
-      @param royaltyBPS BPS of the royalty set on the contract. Can be 0 for no royalty.
-      @param splitBPS BPS of the royalty set on the contract. Can be 0 for no royalty.        
       @dev Function to create a new drop. Can only be called by the allowed creator
            Sets the only allowed minter to the address that creates/owns the drop.
            This can be re-assigned or updated later
@@ -161,9 +159,7 @@ contract ExpandedNFT is
         bytes32 animationHash,
         string memory imageUrl,
         bytes32 imageHash,
-        uint256 _dropSize,
-        uint256 royaltyBPS,
-        uint256 splitBPS
+        uint256 _dropSize
     ) public initializer {
         __ERC721_init(_name, _symbol);
         __Ownable_init();
@@ -178,8 +174,6 @@ contract ExpandedNFT is
         
         _artistWallet = artistWallet;
         dropSize = _dropSize;
-        _pricing.royaltyBPS = royaltyBPS;
-        _pricing.splitBPS = splitBPS;
 
         // Set edition id start to be 1 not 0
         _atEditionId.increment();
@@ -225,8 +219,7 @@ contract ExpandedNFT is
         uint256 _vipSalePrice,
         uint256 _membersSalePrice,      
         uint256 _generalSalePrice    
-    ) external onlyOwner {
-    
+    ) external onlyOwner {  
         _pricing.royaltyBPS = _royaltyBPS;
         _pricing.splitBPS = _splitBPS;
 

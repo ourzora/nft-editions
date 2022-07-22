@@ -38,8 +38,6 @@ contract DropCreator {
     /// @param _animationHash Metadata: SHA-256 Hash of the animation (if no animation url, can be 0x0)
     /// @param _imageUrl Metadata: Image url (semi-required) of the drop entry
     /// @param _imageHash Metadata: SHA-256 hash of the Image of the drop entry (if not image, can be 0x0)
-    /// @param _dropSize Total size of the drop (number of possible editions)
-    /// @param _royaltyBPS BPS amount of royalty
     function createDrop(
         address _artistWallet,
         string memory _name,
@@ -49,9 +47,7 @@ contract DropCreator {
         bytes32 _animationHash,
         string memory _imageUrl,
         bytes32 _imageHash,
-        uint256 _dropSize,
-        uint256 _royaltyBPS,
-        uint256 _splitBPS
+        uint256 _dropSize
     ) external returns (uint256) {
         address newContract = ClonesUpgradeable.cloneDeterministic(
             implementation,
@@ -68,9 +64,7 @@ contract DropCreator {
             _animationHash,
             _imageUrl,
             _imageHash,
-            _dropSize,
-            _royaltyBPS,
-            _splitBPS
+            _dropSize
         );
 
         uint256 newId = _atContract.current();        
