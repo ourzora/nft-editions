@@ -69,6 +69,8 @@ contract SingleEditionMintable is
     // Global constructor for factory
     constructor(SharedNFTLogic _sharedNFTLogic) {
         sharedNFTLogic = _sharedNFTLogic;
+
+        _disableInitializers();
     }
 
     /**
@@ -137,7 +139,7 @@ contract SingleEditionMintable is
     }
 
     /**
-      @param _salePrice if sale price is 0 sale is stopped, otherwise that amount 
+      @param _salePrice if sale price is 0 sale is stopped, otherwise that amount
                        of ETH is needed to start the sale.
       @dev This sets a simple ETH sales price
            Setting a sales price allows users to mint the edition until it sells out.
@@ -243,7 +245,7 @@ contract SingleEditionMintable is
 
     /**
         @param tokenId Token ID to burn
-        User burn function for token id 
+        User burn function for token id
      */
     function burn(uint256 tokenId) public {
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Not approved");
