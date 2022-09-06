@@ -41,8 +41,8 @@
     "dotenv": "^10.0.0"
   },
   "dependencies": {
-    "ethers": "^5.4.1",
-    "@openzeppelin/contracts-upgradeable": "^4.3.2",
-    "base64-sol": "^1.0.1"
+    "@openzeppelin/contracts-upgradeable": "^4.7.3",
+    "base64-sol": "^1.0.1",
+    "ethers": "^5.4.1"
   }
 }
