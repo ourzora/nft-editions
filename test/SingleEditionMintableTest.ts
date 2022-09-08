@@ -13,22 +13,42 @@ describe("SingleEditionMintable", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
   let dynamicSketch: SingleEditionMintableCreator;
+  let editionImpl: SingleEditionMintable;
 
   beforeEach(async () => {
-    const { SingleEditionMintableCreator } = await deployments.fixture([
+    const { SingleEditionMintableCreator, SingleEditionMintable } = await deployments.fixture([
       "SingleEditionMintableCreator",
       "SingleEditionMintable",
     ]);
-    const dynamicMintableAddress = (
-      await deployments.get("SingleEditionMintable")
-    ).address;
     dynamicSketch = (await ethers.getContractAt(
       "SingleEditionMintableCreator",
       SingleEditionMintableCreator.address
     )) as SingleEditionMintableCreator;
 
+    editionImpl = (await ethers.getContractAt(
+      "SingleEditionMintable",
+      SingleEditionMintable.address
+    )) as SingleEditionMintable;
+
     signer = (await ethers.getSigners())[0];
     signerAddress = await signer.getAddress();
+  });
+
+  it("does not allow re-initialization of the implementation contract", async () => {
+    await expect(
+      editionImpl.initialize(
+        signerAddress,
+        "test name",
+        "SYM",
+        "description",
+        "animation",
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "uri",
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+        12,
+        12
+      )
+    ).to.be.revertedWith("Initializable: contract is already initialized");
   });
 
   it("makes a new edition", async () => {
@@ -294,7 +314,7 @@ describe("SingleEditionMintable", () => {
           200,
           200
         );
-    
+
         const editionResult = await dynamicSketch.getEditionAtId(1);
         const minterContractNew = (await ethers.getContractAt(
           "SingleEditionMintable",
