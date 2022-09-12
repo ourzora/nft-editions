@@ -147,7 +147,7 @@ contract SingleEditionMintable is
      */
     function setSalePrice(uint256 _salePrice) external onlyOwner {
         salePrice = _salePrice;
-        emit PriceChanged(salePrice);
+        emit PriceChanged(_salePrice);
     }
 
     /**
