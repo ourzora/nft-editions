@@ -1,3 +1,10 @@
+### Deprecation Notice
+
+This is a legacy NFT protocol which ZORA does not use anymore but is still alive onchain due to the nature of decentralized applications.
+
+The media onchain is supported by multiple NFT platforms (including ZORA) for historical purposes, trading, and display but we strongly recommend using other approaches to mint and sell NFTs today (including our newer https://github.com/ourzora/zora-protocol protocol monorepo).
+
+
 # Zora NFT Editions
 
 ### What are these contracts?
@@ -102,6 +109,3 @@ Now that you have a edition, there are multiple options for lazy-minting and sal
 
 `hardhat sourcify --network rinkeby && hardhat etherscan-verify --network rinkeby`
 
-### Bug Bounty
-5 ETH for any critical bugs that could result in loss of funds.
-Rewards will be given for smaller bugs or ideas.
