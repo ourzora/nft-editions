@@ -330,6 +330,14 @@ contract SingleEditionMintable is
             );
     }
 
+    /**
+        @dev Get the description for this edition
+        @return description string for the edition
+     */
+    function getDescription() external view returns (string memory) {
+        return description;
+    }
+
     function supportsInterface(bytes4 interfaceId)
         public
         view
